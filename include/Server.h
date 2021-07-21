@@ -5,6 +5,8 @@
 #include "SharedPtr.h"
 #include <stdexcept>
 #include <cstring>
+#include <set>
+#include <list>
 
 typedef int fd_type;
 
@@ -35,7 +37,7 @@ class Server {
 
 	//std::vector<ServConfig> _servers;
 
-	std::vector<SharedPtr<Client> > _new_users;
+	std::list<SharedPtr<Client> > _new_users;
     std::map<std::string, SharedPtr<Client> > _full_users;
     // TODO: std::map<std::string, Channel> _channels;
 	fd_set _readFds;

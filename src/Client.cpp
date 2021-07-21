@@ -23,42 +23,44 @@ bool Client::response() {
 }
 
 int Client::getFd() const {
-    return fd_;
+    return _fd;
 }
 
 bool Client::receive(bool fd_is_set) {
-    if(fd_is_set)
-    {
-        raw_data += read(1000);
-        //read to raw_data;
-    }
-    //TODO:: list of commands
-    //split raw data
-    //raw_data = raw_data_splited.back()
-    //COMMAND
-    if (_status != READY_TO_READ)
+    if (!fd_is_set)
         return false;
-    try {
-        if (_req.receive() <= 0)
-            return false;
-        if (_req.isComplete()) {
-            _status = READY_TO_SEND;
+    int ret = 1;
+    char buffer[BUFFER_SIZE + 1];
+    size_t read_ret = read(getFd(), buffer, BUFFER_SIZE);
+    buffer[read_ret] = '\0';
+    _raw_data += buffer;
+    if (_raw_data.empty())
+        return false;
+
+    bool save_last = _raw_data.back() != '\n';
+    std::vector<std::string> splitted = ft::split(_raw_data, '\n');
+    if (save_last) {
+        _raw_data.assign(splitted.back());
+        splitted.erase(std::prev(splitted.end()));
+    }
+    for (size_t i = 0; splitted.size(); i++) {
+        try {
+            _received_commands.push(Command(splitted[i]));
+        }
+        catch (std::exception &e) {
+            //TODO:_received_msgs.push("ТЫ ОШИБСЯ");
         }
     }
-    catch (std::exception &e) {
-        _req.clear();
-        _status = READY_TO_SEND;
-        std::cout << e.what() << std::endl;
-    }
+
     return true;
 }
 
 Client::~Client() {
-    close(fd_);
+    close(_fd);
 }
 
-Client::Client(int fd, const sockaddr_in &clientAddr)
-        : fd_(fd), _sended(0), _status(READY_TO_READ), _req(fd), _clientAddr(clientAddr) {
+Client::Client(int fd)
+        : _fd(fd){
 }
 
 
@@ -66,7 +68,7 @@ void Client::raw_send() {
     static const size_t MAX_CHUNK_SIZE = pow(2, 20);
     if (_sended < _raw_msg.size()) {
         ssize_t chunk_size = std::min(_raw_msg.size() - _sended, MAX_CHUNK_SIZE);
-        ssize_t ret = send(fd_, &(_raw_msg.c_str()[_sended]), chunk_size, 0);
+        ssize_t ret = send(_fd, &(_raw_msg.c_str()[_sended]), chunk_size, 0);
         if (ret <= 0) {
             _status = CLOSE_CONNECTION;
         } else {
@@ -83,4 +85,11 @@ e_client_status Client::GetStatus() {
     return _status;
 }
 
+const std::queue<Command> &Client::getReceivedCommands() const {
+    return _received_commands;
+}
 
+
+Command::Command(std::basic_string<char> basicString) {
+
+}

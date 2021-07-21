@@ -7,25 +7,30 @@
 #include <cmath>
 #include <queue>
 
+class Command{
+public:
+    Command(std::basic_string<char> basicString);
+};//TODO sgertrud
+
 class Client {
 public:
     Client(int fd);
     ~Client();
 
 private:
-    const int fd_;
-    e_client_status next_status;
-    size_t _sended;
-    std::string _raw_msg;
-    enum e_client_status _status;
-    Request _req;
+    const int _fd;
 
    //NEW
     std::queue<Message> _received_msgs;
-    //std::queue<Command> _received_commands;
-    std::string _nick;
+    std::queue<Command> _received_commands;
 public:
-    bool receive();
+    const std::queue<Command> &getReceivedCommands() const;
+
+private:
+    //std::string _nick;
+    std::string _raw_data;
+public:
+    bool receive(bool);
 
     bool response();
 

@@ -3,7 +3,7 @@
 #include "Request.h"
 #include "Client.h"
 
-Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr(){
+Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
     bzero(&_sockaddr, sizeof(sockaddr_in));
     FD_ZERO(&_writeFds);
     FD_ZERO(&_readFds);
@@ -66,19 +66,25 @@ void Server::reloadFdSets() {
 }
 
 void Server::checkClients() {
-    std::vector<SharedPtr<Client> >::iterator it;
-    bool acted = false;
-    for (it = _new_users.begin(); it != _new_users.end();) {
-        if (FD_ISSET((*it)->getFd(), &_readFds) &&
-            (*it)->GetStatus() == READY_TO_READ)
-            acted = acted || (*it)->receive();
-        else if (FD_ISSET((*it)->getFd(), &_writeFds))
-            acted = acted || (*it)->response();
+    std::list<SharedPtr<Client> >::iterator it;
+    std::map<std::string, SharedPtr<Client> >::iterator it_a;
 
-        if ((*it)->GetStatus() == CLOSE_CONNECTION)
-            _new_users.erase(it);
-        else
-            ++it;
+    bool acted = false;
+
+    for (it = _new_users.begin(); it != _new_users.end(); it++) {
+        (*it)->receive(FD_ISSET((*it)->getFd(), &_readFds));
+    }
+    for (it_a = _full_users.begin(); it_a != _full_users.end(); it++) {
+        SharedPtr<Client> client = (*it_a).second;
+        client->receive(FD_ISSET(client->getFd(), &_readFds));
+    }
+    for (it = _new_users.begin(); it != _new_users.end(); it++) {
+        SharedPtr<Client> client = (*it_a).second;
+        std::queue<Command> commands = client->getReceivedCommands();
+        while(!commands.empty()){
+            commands.back().exec(this, _new_users[i]);
+            commands.pop();
+        }
     }
 }
 
