@@ -40,6 +40,7 @@ class Server {
 
 	std::list<SharedPtr<Client> > _new_users;
     std::map<std::string, SharedPtr<Client> > _full_users;
+    std::map<std::string, Channel> _channels;
     // TODO: std::map<std::string, Channel> _channels;
 	fd_set _readFds;
 	fd_set _writeFds;

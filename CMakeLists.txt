@@ -15,4 +15,4 @@ add_executable(test_server
         src/Client.cpp
         src/response.cpp
        # src/response_generator.cpp
-       )
+        src/Channel.cpp src/Channel.h)
