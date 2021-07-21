@@ -12,6 +12,7 @@ typedef int fd_type;
 
 class Server {
  public:
+    friend class Command;
 	explicit Server(const std::vector<ServConfig> &servers);
 
 	Server(int port, const std::string& host_ip);
@@ -48,5 +49,5 @@ class Server {
 	std::string _host_ip;
 	sockaddr_in _sockaddr;
 	void reloadFdSets();
-	const std::vector<SharedPtr<Client> > &getClients() const;
+	const std::map<std::string, SharedPtr<Client> > & getClients() const;
 };

@@ -1,6 +1,5 @@
 #include <fcntl.h>
 #include "Server.h"
-#include "Request.h"
 #include "Client.h"
 
 Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
@@ -39,16 +38,27 @@ void Server::newClient() {
                             (socklen_t *) &addrlen); //TODO: clientAddr and Addrlen?!
     if (connection == -1)
         throw Error("connection");
-    SharedPtr<Client> new_client(new Client(connection, clientAddr));
-    _new_users.push_back(new_client);
+    SharedPtr<Client> new_client(new Client(connection));
+    //TODO:: costil
+    rand();
+    std::string name = std::to_string(rand() % 1000);
+    new_client->setNick(name);
+    std::cerr << "New user: " << name << std::endl;
+    _full_users[name] = new_client;
+    //TODO: costil end
     fcntl(connection, F_SETFL, O_NONBLOCK);
 }
 
 int Server::getMaxSockFd() const {
     int maxFd = _socket_fd;
-    for (size_t i = 0; i < getClients().size(); ++i)
-        maxFd = std::max(getClients()[i]->getFd(), maxFd);
-
+    std::map<std::string, SharedPtr<Client> >::const_iterator client;
+    for (client = getClients().cbegin(); client != getClients().cend(); client++) {
+        maxFd = std::max((*client).second->getFd(), maxFd);
+    }
+    std::list<SharedPtr<Client> >::const_iterator new_client;
+    for (new_client = _new_users.cbegin(); new_client != _new_users.cend(); new_client++) {
+        maxFd = std::max((*new_client)->getFd(), maxFd);
+    }
     if (maxFd == -1)
         throw Error("get Max Fd");
     return (maxFd);
@@ -57,34 +67,58 @@ int Server::getMaxSockFd() const {
 void Server::reloadFdSets() {
     FD_ZERO(&_readFds);
     FD_ZERO(&_writeFds);
-    std::vector<SharedPtr<Client> >::const_iterator client;
+    std::map<std::string, SharedPtr<Client> >::const_iterator client;
     for (client = getClients().cbegin(); client != getClients().cend(); client++) {
-        FD_SET((*client)->getFd(), &_readFds);
-        FD_SET((*client)->getFd(), &_writeFds);
+        FD_SET((*client).second->getFd(), &_readFds);
+        FD_SET((*client).second->getFd(), &_writeFds);
+    }
+
+    std::list<SharedPtr<Client> >::const_iterator new_client;
+    for (new_client = _new_users.cbegin(); new_client != _new_users.cend(); new_client++) {
+        FD_SET((*new_client)->getFd(), &_readFds);
+        FD_SET((*new_client)->getFd(), &_writeFds);
     }
     FD_SET(_socket_fd, &_readFds);
 }
 
 void Server::checkClients() {
-    std::list<SharedPtr<Client> >::iterator it;
-    std::map<std::string, SharedPtr<Client> >::iterator it_a;
+    typedef std::list<SharedPtr<Client> >::iterator list_iter;
+    typedef std::map<std::string, SharedPtr<Client> >::iterator map_iter;
+    //TODO:: Vid pipez
 
     bool acted = false;
 
-    for (it = _new_users.begin(); it != _new_users.end(); it++) {
+    for (list_iter it = _new_users.begin(); it != _new_users.end(); it++) {
         (*it)->receive(FD_ISSET((*it)->getFd(), &_readFds));
     }
-    for (it_a = _full_users.begin(); it_a != _full_users.end(); it++) {
+
+    for (map_iter it_a = _full_users.begin(); it_a != _full_users.end(); it_a++) {
         SharedPtr<Client> client = (*it_a).second;
         client->receive(FD_ISSET(client->getFd(), &_readFds));
     }
-    for (it = _new_users.begin(); it != _new_users.end(); it++) {
-        SharedPtr<Client> client = (*it_a).second;
-        std::queue<Command> commands = client->getReceivedCommands();
-        while(!commands.empty()){
-            commands.back().exec(this, _new_users[i]);
-            commands.pop();
+
+    for (list_iter it = _new_users.begin(); it != _new_users.end(); it++) {
+        SharedPtr<Client> client = (*it);
+        while (client->hasCommands()) {
+            client->getCommand().exec(this);
         }
+    }
+
+    for (map_iter  it_a = _full_users.begin(); it_a != _full_users.end(); it_a++) {
+        SharedPtr<Client> client = (*it_a).second;
+        while (client->hasCommands()) {
+            client->getCommand().exec(this);
+        }
+    }
+
+    for (list_iter  it = _new_users.begin(); it != _new_users.end(); it++) {
+        if (FD_ISSET((*it)->getFd(), &_writeFds))
+            (*it)->response();
+    }
+
+    for (map_iter it_a = _full_users.begin(); it_a != _full_users.end(); it_a++) {
+        if (FD_ISSET((*it_a).second->getFd(), &_writeFds))
+            (*it_a).second->response();
     }
 }
 
@@ -99,6 +133,6 @@ void Server::checkSockets() {
         this->newClient();
 }
 
-const std::vector<SharedPtr<Client> > &Server::getClients() const {
-    return _new_users;
+const std::map<std::string, SharedPtr<Client> > &Server::getClients() const {
+    return _full_users;
 }
