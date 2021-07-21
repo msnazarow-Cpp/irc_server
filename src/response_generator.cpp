@@ -3,7 +3,6 @@
 #include <string>
 #include <ServConfig.h>
 #include <methods.h>
-#include <base64.h>
 #include "response.h"
 #include "utils.h"
 #include "Request.h"

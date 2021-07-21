@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Parser.h"
-#include "Cgi.h"
 #include "Client.h"
 #include "SharedPtr.h"
 #include <stdexcept>
@@ -20,7 +19,7 @@ class Server {
 	void checkSockets();
 	int Select();
 	int getMaxSockFd() const;
-	void newClient(int indexServer);
+	void newClient();
 
 	class Error : public std::runtime_error {
 	 private:
@@ -34,9 +33,11 @@ class Server {
 	Server(const Server &);
 	void operator=(const Server &);
 
-	std::vector<ServConfig> _servers;
-	size_t _amountServers;
-	std::vector<SharedPtr<Client> > _clients;
+	//std::vector<ServConfig> _servers;
+
+	std::vector<SharedPtr<Client> > _new_users;
+    std::map<std::string, SharedPtr<Client> > _full_users;
+    // TODO: std::map<std::string, Channel> _channels;
 	fd_set _readFds;
 	fd_set _writeFds;
 
