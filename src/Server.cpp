@@ -1,7 +1,9 @@
 #include <fcntl.h>
 #include "Server.h"
 #include "Client.h"
-
+#ifndef SO_NOSIGPIPE
+    #define SO_NOSIGPIPE 2 
+#endif // !SO_NOSIGPIPE
 Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
     bzero(&_sockaddr, sizeof(sockaddr_in));
     FD_ZERO(&_writeFds);
@@ -86,7 +88,7 @@ void Server::checkClients() {
     typedef std::map<std::string, SharedPtr<Client> >::iterator map_iter;
     //TODO:: Vid pipez
 
-    bool acted = false;
+    //bool acted = false;
 
     for (list_iter it = _new_users.begin(); it != _new_users.end(); it++) {
         (*it)->receive(FD_ISSET((*it)->getFd(), &_readFds));

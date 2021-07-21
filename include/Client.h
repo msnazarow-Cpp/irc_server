@@ -21,27 +21,29 @@ public:
 };//TODO sgertrud
 
 class Client {
+    
+private:
+    std::string _nick;
+    std::string _raw_data;
+    std::string _raw_send;
+    const int _fd;
 public:
     Client(int fd);
     ~Client();
 
-private:
-    const int _fd;
 
    //NEW
     std::queue<Message> _received_msgs;
     std::queue<Command> _received_commands;
-private:
-    std::string _nick;
+
 public:
     void setNick(const std::string &nick);
 
 public:
     const std::string &getNick() const;
 
-private:
-    std::string _raw_data;
-    std::string _raw_send;
+
+
 public:
 
     bool receive(bool);

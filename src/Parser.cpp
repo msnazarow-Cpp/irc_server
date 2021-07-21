@@ -1,5 +1,6 @@
 #include <cmath>
 #include "Parser.h"
+#include <limits>
 
 std::map<std::string, void (*)(const std::vector<std::string> &, ServConfig &)> Parser::servParser;
 std::map<std::string, void (Location::*)(const std::string &)> Parser::locParser;

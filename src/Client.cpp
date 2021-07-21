@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include "Server.h"
 #include "Message.h"
+#include <unistd.h>
 
 #define BUFFER_SIZE 10000
 
@@ -21,7 +22,7 @@ int Client::getFd() const {
 bool Client::receive(bool fd_is_set) {
     if (!fd_is_set)
         return false;
-    int ret = 1;
+    //int ret = 1;
     char buffer[BUFFER_SIZE + 1];
     size_t read_ret = read(getFd(), buffer, BUFFER_SIZE);
     buffer[read_ret] = '\0';
@@ -53,7 +54,7 @@ Client::~Client() {
     close(_fd);
 }
 
-Client::Client(int fd) : _nick(), _raw_send(), _raw_data(), _fd(fd) {
+Client::Client(int fd) : _nick(), _raw_data(), _raw_send(), _fd(fd) {
 }
 
 

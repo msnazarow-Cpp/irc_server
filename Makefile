@@ -7,17 +7,10 @@ SRC_M		=	main.cpp\
 				Parser.cpp\
 				Location.cpp\
 				utils.cpp\
-				Cgi.cpp\
-				Request.cpp\
 				Client.cpp\
-				MimeTypes.cpp\
 				response.cpp\
-				GetMethod.cpp\
-				PostMethod.cpp\
-				PutMethod.cpp\
-				response_generator.cpp\
-				base64.cpp \
-				DeleteMethod.cpp
+				Channel.cpp\
+				Message.cpp\
 
 SRC_B		=	main.cpp\
 				ServConfig_bonus.cpp \
@@ -43,7 +36,7 @@ OBJ_B		=	$(addprefix $(BIN)/, $(SRC_B:cpp=o))
 DEP			=	$(OBJ_M:%.o=%.d) \
 				$(OBJ_B:%.o=%.d)
 CC			=	clang++
-FLAGS		=	-Wall -Wextra -Werror -std=c++98
+FLAGS		=	-Wall -Wextra -Werror #-std=c++98
 
 .PHONY: all clean fclean re
 

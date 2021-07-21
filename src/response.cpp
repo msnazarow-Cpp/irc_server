@@ -2,6 +2,9 @@
 #include "utils.h"
 #include <vector>
 #include <fstream>
+#ifndef __APPLE__
+    #include <sys/time.h>
+#endif // !__APPLE__
 
 Response::Response(int code) : code_(code) {}
 

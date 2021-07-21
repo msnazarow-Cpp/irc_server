@@ -1,4 +1,5 @@
 #include "Location.h"
+#include <algorithm>
 
 Location::Location()
 	: _maxBody(DEF_MAX_BODY),
@@ -193,7 +194,7 @@ const std::string &Location::getAuthorization() const {
 
 std::ostream &operator<<(std::ostream &os, const std::vector<e_methods> &v) {
 	for (size_t i = 0; i < v.size(); ++i) {
-		std::vector<std::string>::const_iterator it;
+		//std::vector<std::string>::const_iterator it;
 		std::vector<std::string> methods = Location::getMethodsParser();
 		os << "\t\t" << methods.at(v[i]) << std::endl;
 	}

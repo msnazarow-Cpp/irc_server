@@ -3,9 +3,12 @@
 #include <map>
 #include <string>
 #include <sstream>
-#include <libc.h>
+#include <vector>
 #include <cmath>
 #include "returnCodes.h"
+#ifdef __APPLE__
+    #include <libc.h>
+#endif // !__APPLE__
 
 class Response {
  public:

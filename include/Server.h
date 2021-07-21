@@ -7,7 +7,7 @@
 #include <cstring>
 #include <set>
 #include <list>
-
+#include <Channel.h>
 typedef int fd_type;
 
 class Server {
