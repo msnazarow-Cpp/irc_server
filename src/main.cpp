@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Server.h"
 
 volatile bool loop = true;
@@ -8,7 +9,7 @@ int main(int ac, char **av)
 		std::cerr << "\033[1;31mOne argument only!\033[0m" << std::endl;
 		return 1;
 	}
-	std::cout << std::endl << "\033[1;31m" << "WELCOME TO KINGINX" << "\033[0m" << std::endl << std::endl;
+	std::cout << std::endl << "\033[1;31m" << "WELCOME TO MMM_IRC" << "\033[0m" << std::endl << std::endl;
 
 	int port = atoi(av[1]); //TODO verifiy
 	std::cout << port << std::endl;

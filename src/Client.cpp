@@ -6,6 +6,7 @@
 #include "Server.h"
 #include "Message.h"
 #include <unistd.h>
+#include "utils.h"
 
 #define BUFFER_SIZE 10000
 

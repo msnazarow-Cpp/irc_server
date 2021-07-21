@@ -1,4 +1,5 @@
 #include <fcntl.h>
+#include <iostream>
 #include "Server.h"
 #include "Client.h"
 #ifndef SO_NOSIGPIPE

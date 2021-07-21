@@ -5,7 +5,6 @@
 # include <string>
 # include <exception>
 # include <sstream>
-# include "Location.h"
 
 namespace ft {
 bool isalldigits(const std::string &str);
@@ -29,8 +28,6 @@ std::string to_str(T n) {
 	//TODO: do we need exception?
 	return res;
 }
-
-std::string to_str(e_methods method);
 
 size_t to_num(const std::string &str, bool hex = false);
 

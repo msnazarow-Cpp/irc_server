@@ -60,10 +60,6 @@ std::vector<std::string> ft::split(const std::string &str, const char delim) {
 	return res;
 }
 
-std::string ft::to_str(e_methods method) {
-	return Location::getMethodsParser().at(method);
-}
-
 std::string ft::toupper(std::string data) {
 	transform(data.begin(), data.end(), data.begin(), ::toupper);
 	return data;

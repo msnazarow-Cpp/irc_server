@@ -1,3 +1,5 @@
+__deprecated
+
 #pragma once
 
 #include "response.h"

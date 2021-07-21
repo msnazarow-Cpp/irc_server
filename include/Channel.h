@@ -4,5 +4,5 @@
 #include <map>
 class Channel {
     std::string admin;
-    std::map<std::string, std::vector<char>>  users;
+    std::map<std::string, std::vector<char> >  users;
 };

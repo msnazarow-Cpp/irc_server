@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Parser.h"
 #include "Client.h"
 #include "SharedPtr.h"
 #include <stdexcept>
@@ -8,13 +7,14 @@
 #include <set>
 #include <list>
 #include <Channel.h>
+#include <cerrno>
+#include <netinet/in.h>
+
 typedef int fd_type;
 
 class Server {
  public:
     friend class Command;
-	explicit Server(const std::vector<ServConfig> &servers);
-
 	Server(int port, const std::string& host_ip);
 
 	void initSocket();
