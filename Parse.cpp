@@ -4,21 +4,23 @@
 
 Parse::Parse() 
 {
-	commands = create_map<std::string, Command*>
+	
+
+}
+
+std::map<std::string, Command*> Parse::commands = create_map<std::string, Command*>
 	("PASS", new Pass())("KICK", new Kick())("INVITE", new Invite())("JOIN", new Join())
 	("KILL", new Kill())("MODE", new Mode())("NICK", new Nick())("OPER", new Oper())
 	("PART", new Part())("PRIVMSG", new Privmsg())("QUIT", new Quit())("USER", new User());
 
-}
-
 Parse::~Parse() 
 {
-	std::map<std::string, Command*>::iterator it = commands.begin();
-	while (it != commands.end())
-	{
-		delete (*it).second;
-		it++;
-	}
+	// std::map<std::string, Command*>::iterator it = commands.begin();
+	// while (it != commands.end())
+	// {
+	// 	delete (*it).second;
+	// 	it++;
+	// }
 }
 
 Parse& Parse::operator=(const Parse &) 

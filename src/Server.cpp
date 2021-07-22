@@ -1,16 +1,21 @@
 #include <fcntl.h>
 #include "Server.h"
 #include "Client.h"
+#include "Command.hpp"
 #ifndef SO_NOSIGPIPE
     #define SO_NOSIGPIPE 2 
 #endif // !SO_NOSIGPIPE
+#define ElementWasDeleted true
 Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
     bzero(&_sockaddr, sizeof(sockaddr_in));
     FD_ZERO(&_writeFds);
     FD_ZERO(&_readFds);
     initSocket();
 }
-
+Server::Server(int port, const std::string &host_ip, std::string password) : Server(port, host_ip)
+{
+	_password = password;
+}
 void Server::initSocket() {
     _sockaddr.sin_family = AF_INET; // ipV4
     _sockaddr.sin_port = htons(_port);
@@ -42,13 +47,25 @@ void Server::newClient() {
         throw Error("connection");
     SharedPtr<Client> new_client(new Client(connection));
     //TODO:: costil
-    rand();
-    std::string name = std::to_string(rand() % 1000);
-    new_client->setNick(name);
+    std::string name = "__unregistered__" + SSTR(_number_of_uneregistered_clients++);
+    new_client->set_nickname(name);
     std::cerr << "New user: " << name << std::endl;
-    _full_users[name] = new_client;
+    _users[name] = new_client;
     //TODO: costil end
     fcntl(connection, F_SETFL, O_NONBLOCK);
+}
+
+const std::string & Server::getPassword() const
+{
+    return _password;
+}
+
+void Server::authentificate(Client & client) 
+{
+    if (client.status() >= pass_passing)
+        throw AleadyPassAuthentificationException();
+    client.setStatus(pass_passing);
+	client._received_msgs.push(returnSendableMessageToClient("Correct password", client));
 }
 
 int Server::getMaxSockFd() const {
@@ -84,46 +101,54 @@ void Server::reloadFdSets() {
 }
 
 void Server::checkClients() {
-    typedef std::list<SharedPtr<Client> >::iterator list_iter;
+
     typedef std::map<std::string, SharedPtr<Client> >::iterator map_iter;
     //TODO:: Vid pipez
 
     //bool acted = false;
 
-    for (list_iter it = _new_users.begin(); it != _new_users.end(); it++) {
-        (*it)->receive(FD_ISSET((*it)->getFd(), &_readFds));
-    }
-
-    for (map_iter it_a = _full_users.begin(); it_a != _full_users.end(); it_a++) {
+    for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {
         SharedPtr<Client> client = (*it_a).second;
         client->receive(FD_ISSET(client->getFd(), &_readFds));
     }
-
-    for (list_iter it = _new_users.begin(); it != _new_users.end(); it++) {
-        SharedPtr<Client> client = (*it);
-        while (client->hasCommands()) {
-            client->getCommand().exec(this);
-        }
-    }
-
-    for (map_iter  it_a = _full_users.begin(); it_a != _full_users.end(); it_a++) {
+	map_iter  it_a = _users.begin();
+	while (it_a != _users.end())
+	{
         SharedPtr<Client> client = (*it_a).second;
         while (client->hasCommands()) {
-            client->getCommand().exec(this);
+			SharedPtr<Command> comm;
+            try
+            {
+                comm = client->popCommand();
+                comm->execute(*this,*client);
+            }
+            catch(const std::exception& e)
+            {
+                client->_received_msgs.push(returnSendableMessageToClient(comm->getCommandName() + ": " + e.what(), *client));
+            }
         }
+		it_a++;
     }
-
-    for (list_iter  it = _new_users.begin(); it != _new_users.end(); it++) {
-        if (FD_ISSET((*it)->getFd(), &_writeFds))
-            (*it)->response();
-    }
-
-    for (map_iter it_a = _full_users.begin(); it_a != _full_users.end(); it_a++) {
+	while (!_to_delete.empty())
+	{
+		_users.erase(_to_delete.back());
+		_to_delete.pop();
+	}
+    for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {
         if (FD_ISSET((*it_a).second->getFd(), &_writeFds))
             (*it_a).second->response();
     }
 }
 
+std::string returnSendableMessageToClient(std::string message, const Client & client)
+    {
+		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.hostIp() + " " + message + "\n");
+	}
+	
+std::string Server::hostIp() const
+	{
+		return _host_ip;
+	}
 int Server::Select() {
     reloadFdSets();
     struct timeval tv = {10, 0};
@@ -136,5 +161,5 @@ void Server::checkSockets() {
 }
 
 const std::map<std::string, SharedPtr<Client> > &Server::getClients() const {
-    return _full_users;
+    return _users;
 }

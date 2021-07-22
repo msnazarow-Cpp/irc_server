@@ -18,9 +18,10 @@ Part *Part::create(std::vector<std::string> arguments)
 	return new Part(arguments);
 }
 
-void Part::execute(const Server & server, const Client & client)
+bool Part::execute(Server & server, Client & client)
 {
 	std::cout << "Part works!" << std::endl;
+	return false;
 }
 
 // std::string Part::getCommandName() 

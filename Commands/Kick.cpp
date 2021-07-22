@@ -18,9 +18,10 @@ Kick *Kick::create(std::vector<std::string> arguments)
 	return new Kick(arguments);
 }
 
-void Kick::execute(const Server & server, const Client & client)
+bool Kick::execute(Server & server, Client & client)
 {
 	std::cout << "Kick works!" << std::endl;
+	return false;
 }
 
 // std::string Kick::getCommandName() 

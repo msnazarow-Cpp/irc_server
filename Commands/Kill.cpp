@@ -18,9 +18,10 @@ Kill *Kill::create(std::vector<std::string> arguments)
 	return new Kill(arguments);
 }
 
-void Kill::execute(const Server & server, const Client & client)
+bool Kill::execute(Server & server, Client & client)
 {
 	std::cout << "Kill works!" << std::endl;
+	return true;
 }
 
 // std::string Kill::getCommandName() 

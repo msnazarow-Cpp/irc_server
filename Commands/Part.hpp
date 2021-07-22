@@ -13,7 +13,7 @@ public:
     ~Part();
 
 	virtual Part *create(std::vector<std::string> arguments);
-	virtual void execute(const Server & server, const Client & client);
+	virtual bool execute(Server & server, Client & client);
 	// virtual std::string getCommandName();
 private:
     

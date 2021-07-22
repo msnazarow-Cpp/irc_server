@@ -6,6 +6,8 @@
 #include "Server.h"
 #include "Message.h"
 #include <unistd.h>
+#include <Parse.hpp>
+#include "Command.hpp"
 
 #define BUFFER_SIZE 10000
 
@@ -31,20 +33,34 @@ bool Client::receive(bool fd_is_set) {
         return false;
 
     bool save_last = _raw_data.back() != '\n';
-    std::vector<std::string> splitted = ft::split(_raw_data, '\n');
+    std::vector<std::string> splitted = ft::split(_raw_data, "\r\n");
     if (save_last) {
         _raw_data.assign(splitted.back());
         splitted.erase(std::prev(splitted.end()));
     } else
         _raw_data.clear();
     for (size_t i = 0; i < splitted.size(); i++) {
-        try {
-            if (!splitted[i].empty()) //TODO: split problem... kostil
-                _received_commands.push(Command(splitted[i], _nick));
+		SharedPtr<Command> comm;
+        try 
+		{
+			if (!splitted[i].empty())
+			{
+				comm = SharedPtr<Command>(Parse::make_command(splitted[i]));             //TODO: split problem... kostil
+                _received_commands.push(comm);
+			}
         }
-        catch (std::exception &e) {
-            //TODO:_received_msgs.push("ТЫ ОШИБСЯ");
-        }
+		catch(const Parse::CommandNotValidExeption & e)
+		{
+			_received_msgs.push(returnSendableMessageToClient(e.what(), *this));
+		}
+		catch(const Command::WrongArgumentsNumber &e)
+		{
+			_received_msgs.push(returnSendableMessageToClient(splitted[0] + ": " + e.what(), *this));
+		}
+		catch(const std::exception& e)
+		{
+			//TODO:_received_msgs.push("ТЫ ОШИБСЯ");
+		}
     }
 
     return true;
@@ -54,7 +70,7 @@ Client::~Client() {
     close(_fd);
 }
 
-Client::Client(int fd) : _nick(), _raw_data(), _raw_send(), _fd(fd) {
+Client::Client(int fd) : _nickname(), _raw_data(), _raw_send(), _fd(fd), _status(unregistered) {
 }
 
 
@@ -72,47 +88,87 @@ void Client::raw_send() {
 bool Client::hasCommands() const{
     return !_received_commands.empty();
 }
-Command Client::getCommand()  {
-    Command command = _received_commands.back();
+
+Status Client::status() const
+{
+    return _status;
+}
+
+void Client::setStatus(Status status) 
+{
+    _status = status;
+}
+SharedPtr<Command> Client::popCommand()  {
+    SharedPtr<Command> command = _received_commands.back();
     _received_commands.pop();
     return command;
 }
 
-void Client::addMsg(const Message &msg) {
+void Client::addMsg(const std::string &msg) {
     _received_msgs.push(msg);
 }
 
 void Client::Combine_messages() {
     while (!_received_msgs.empty()) {
-        _raw_send += _received_msgs.back().to_string();
+        _raw_send += _received_msgs.back().c_str();
         _received_msgs.pop();
     }
 }
 
-const std::string &Client::getNick() const {
-    return _nick;
+
+void Client::set_realname(std::string _realname)
+{
+	this->_realname = _realname;
 }
 
-void Client::setNick(const std::string &nick) {
-    _nick = nick;
+std::string Client::get_realname() const
+{
+	return this->_realname;
 }
 
-
-Command::Command(const std::string &command, const std::string &nick) : client_nick(nick) {
-    //TODO: ЗАГЛУШКА!
-    std::vector<std::string> splitted = ft::split(command, ' ');
-    dst = splitted[0];
-    msg = splitted[1];
+std::string Client::get_nickname() const
+{
+	return this->_nickname;
 }
 
-void Command::exec(Server *server) {
-    //TODO: ЗАГЛУШКА!
-    try {
-        Message new_msg(client_nick, msg);
-        server->_full_users.at(dst)->addMsg(new_msg);
-        //AT ВАЖЕН!!!!
-   }
-    catch (...) {
-        std::cerr << "Catch error ..." << std::endl;
-    }
+void Client::set_nickname(std::string _nickname)
+{
+	this->_nickname = _nickname;
 }
+
+std::string Client::get_username() const
+{
+	return this->_username;
+}
+
+void Client::set_username(std::string _username)
+{
+	this->_username = _username;
+}
+
+std::string Client::get_hostname() const
+{
+	return this->_hostname;
+}
+
+std::string Client::hostIp() const { return _hostIp; }
+
+
+// Command::Command(const std::string &command, const std::string &nick) : client_nick(nick) {
+//     //TODO: ЗАГЛУШКА!
+//     std::vector<std::string> splitted = ft::split(command, ' ');
+//     dst = splitted[0];
+//     msg = splitted[1];
+// }
+
+// void Command::exec(Server *server) {
+//     //TODO: ЗАГЛУШКА!
+//     try {
+//         Message new_msg(client_nick, msg);
+//         server->_users.at(dst)->addMsg(new_msg);
+//         //AT ВАЖЕН!!!!
+//    }
+//     catch (...) {
+//         std::cerr << "Catch error ..." << std::endl;
+//     }
+// }

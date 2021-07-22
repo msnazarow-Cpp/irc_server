@@ -25,9 +25,10 @@ Privmsg *Privmsg::create(std::vector<std::string> arguments)
 	return new Privmsg(arguments);
 }
 
-void Privmsg::execute(const Server & server, const Client & client)
+bool Privmsg::execute(Server & server, Client & client)
 {
 	std::cout << "Privmsg works!" << std::endl;
+	return false;
 }
 
 // std::string Privmsg::getCommandName() 

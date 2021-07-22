@@ -19,9 +19,10 @@ Quit *Quit::create(std::vector<std::string> arguments)
 	return new Quit(arguments);
 }
 
-void Quit::execute(const Server & server, const Client & client)
+bool Quit::execute(Server & server, Client & client)
 {
 	std::cout << "Quit works!" << std::endl;
+	return true;
 }
 
 // std::string Quit::getCommandName() 
