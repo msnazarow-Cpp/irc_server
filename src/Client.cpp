@@ -9,6 +9,8 @@
 
 #define BUFFER_SIZE 10000
 
+Parse Client::parse;
+
 bool Client::response() {
     this->Combine_messages();
     raw_send(); //TODO: if possible
@@ -43,7 +45,7 @@ bool Client::receive(bool fd_is_set) {
 		{
 			if (!splitted[i].empty())
 			{
-				comm = SharedPtr<Command>(Parse::make_command(splitted[i]));             //TODO: split problem... kostil
+				comm = SharedPtr<Command>(parse.make_command(splitted[i]));             //TODO: split problem... kostil
                 _received_commands.push(comm);
 			}
         }
