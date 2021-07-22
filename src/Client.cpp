@@ -39,6 +39,7 @@ bool Client::receive(bool fd_is_set) {
         splitted.erase(std::prev(splitted.end()));
     } else
         _raw_data.clear();
+
     for (size_t i = 0; i < splitted.size(); i++) {
 		SharedPtr<Command> comm;
         try 

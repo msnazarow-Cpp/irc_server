@@ -102,6 +102,7 @@ void Server::checkClients() {
         SharedPtr<Client> client = (*it_a).second;
         client->receive(FD_ISSET(client->getFd(), &_readFds));
     }
+
     for(map_iter it_a = _users.begin(); it_a != _users.end();it_a++)
 	{
         SharedPtr<Client> client = (*it_a).second;

@@ -54,7 +54,7 @@ public:
     void raw_send();
     bool send_waiting()
 	{
-		return !_raw_send.empty();
+		return !_raw_send.empty() || !_received_msgs.empty();
 	}
     //e_client_status GetStatus();
     int getFd() const;
