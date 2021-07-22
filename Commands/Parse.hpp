@@ -7,26 +7,26 @@ class Parse
 {
 
 private:
-	static std::map<std::string, Command*> commands;
-	static	Pass * pass;
-	static	Kick * kick;
-	static	Invite * invite;
-	static	Join * join;
-	static	Kill * kill;
-	static	Mode * mode;
-	static	Nick * nick;
-	static	Oper * oper;
-	static	Part * part;
-	static	Privmsg * privmsg;
-	static	Quit * quit;
-	static	User * user;
+	std::map<std::string, Command*> commands;
+	// static	Pass * pass;
+	// static	Kick * kick;
+	// static	Invite * invite;
+	// static	Join * join;
+	// static	Kill * kill;
+	// static	Mode * mode;
+	// static	Nick * nick;
+	// static	Oper * oper;
+	// static	Part * part;
+	// static	Privmsg * privmsg;
+	// static	Quit * quit;
+	// static	User * user;
 public:
 	Parse();
 	Parse(const Parse &);
 	Parse &operator=(const Parse &);
 	~Parse();
 
-	static Command *make_command(std::string _message);
+	Command *make_command(std::string _message);
 
 	class CommandNotValidExeption : public std::exception
 	{

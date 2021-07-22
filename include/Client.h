@@ -6,6 +6,7 @@
 #include <queue>
 #include "SharedPtr.h"
 #include "Message.h"
+class Parse;
 class Command;
 class Server;
 class Client;
@@ -36,7 +37,7 @@ private:
     std::string _raw_send;
 	std::string _hostIp;
     const int _fd;
-	
+	static Parse parse;
     Status    _status;
 
 public:
