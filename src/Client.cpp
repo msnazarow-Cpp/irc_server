@@ -1,6 +1,4 @@
 #include "Client.h"
-#include <iostream>
-#include <response.h>
 #include <stdexcept>
 #include <sys/time.h>
 #include "Server.h"
@@ -115,15 +113,15 @@ void Client::addMsg(const std::string &msg) {
 
 void Client::Combine_messages() {
     while (!_received_msgs.empty()) {
-        _raw_send += _received_msgs.front().c_str();
+        _raw_send += _received_msgs.front();
         _received_msgs.pop();
     }
 }
 
 
-void Client::set_realname(std::string _realname)
+void Client::set_realname(const std::string& realname)
 {
-	this->_realname = _realname;
+	this->_realname = realname;
 }
 
 std::string Client::get_realname() const
@@ -136,9 +134,9 @@ std::string Client::get_nickname() const
 	return this->_nickname;
 }
 
-void Client::set_nickname(std::string _nickname)
+void Client::set_nickname(const std::string& nickname)
 {
-	this->_nickname = _nickname;
+	this->_nickname = nickname;
 }
 
 std::string Client::get_username() const
@@ -146,9 +144,9 @@ std::string Client::get_username() const
 	return this->_username;
 }
 
-void Client::set_username(std::string _username)
+void Client::set_username(const std::string& username)
 {
-	this->_username = _username;
+	this->_username = username;
 }
 
 std::string Client::get_hostname() const
@@ -156,7 +154,7 @@ std::string Client::get_hostname() const
 	return this->_hostname;
 }
 
-void Client::set_hostname(std::string hostname) {
+void Client::set_hostname(const std::string& hostname) {
 	_hostname = hostname;
 }
 

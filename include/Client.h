@@ -51,6 +51,10 @@ public:
     bool receive(bool);
     bool response();
     void raw_send();
+    bool send_waiting()
+	{
+		return !_raw_send.empty();
+	}
     //e_client_status GetStatus();
     int getFd() const;
     void Combine_messages();
@@ -62,13 +66,13 @@ public:
     Status status() const;
     void setStatus(Status status);
 	std::string get_nickname() const;
-	void set_nickname(std::string _nickname);
+	void set_nickname(const std::string& nickname);
 	std::string get_username() const; 
-	void set_username(std::string _username);
+	void set_username(const std::string& username);
 	std::string get_hostname() const;
-	void set_hostname(std::string _hostname);
+	void set_hostname(const std::string& hostname);
 	std::string get_realname() const;
-	void set_realname(std::string _realname);
+	void set_realname(const std::string& realname);
 
 	std::string hostIp() const;
 };

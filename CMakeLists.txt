@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(webserv)
 
-set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g -MMD -D_GLIBCXX_DEBUG -fsanitize=address")
 include_directories(include
         Commands
@@ -12,9 +12,8 @@ add_executable(test_server
         src/utils.cpp
         src/main.cpp
         src/Client.cpp
-        src/response.cpp
         src/Channel.cpp
-        src/Parse.cpp
+        Commands/Parse.cpp
         Commands/Command.cpp
         Commands/Invite.cpp
         Commands/Join.cpp

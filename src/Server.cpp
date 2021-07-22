@@ -7,7 +7,8 @@
 #ifndef SO_NOSIGPIPE
     #define SO_NOSIGPIPE 2 
 #endif // !SO_NOSIGPIPE
-#define ElementWasDeleted true
+
+
 Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
     bzero(&_sockaddr, sizeof(sockaddr_in));
     FD_ZERO(&_writeFds);
@@ -73,35 +74,21 @@ const std::string & Server::getPassword() const
 // }
 
 int Server::getMaxSockFd() const {
-    int maxFd = _socket_fd;
-    std::map<std::string, SharedPtr<Client> >::const_iterator client;
-    for (client = getClients().cbegin(); client != getClients().cend(); client++) {
-        maxFd = std::max((*client).second->getFd(), maxFd);
-    }
-    std::list<SharedPtr<Client> >::const_iterator new_client;
-    for (new_client = _new_users.cbegin(); new_client != _new_users.cend(); new_client++) {
-        maxFd = std::max((*new_client)->getFd(), maxFd);
-    }
-    if (maxFd == -1)
-        throw Error("get Max Fd");
-    return (maxFd);
+    return (_max_fd);
 }
 
 void Server::reloadFdSets() {
-    FD_ZERO(&_readFds);
+	_max_fd = -1;
+	update_fd_set(_socket_fd, &_readFds);
+	FD_ZERO(&_readFds);
     FD_ZERO(&_writeFds);
     std::map<std::string, SharedPtr<Client> >::const_iterator client;
     for (client = getClients().cbegin(); client != getClients().cend(); client++) {
-        FD_SET((*client).second->getFd(), &_readFds);
-        FD_SET((*client).second->getFd(), &_writeFds);
+    	SharedPtr<Client> p_client = client->second;
+    	if(p_client->send_waiting())
+			update_fd_set(p_client->getFd(), &_writeFds);
+		update_fd_set(p_client->getFd(), &_readFds);
     }
-
-    std::list<SharedPtr<Client> >::const_iterator new_client;
-    for (new_client = _new_users.cbegin(); new_client != _new_users.cend(); new_client++) {
-        FD_SET((*new_client)->getFd(), &_readFds);
-        FD_SET((*new_client)->getFd(), &_writeFds);
-    }
-    FD_SET(_socket_fd, &_readFds);
 }
 
 void Server::checkClients() {
@@ -115,8 +102,7 @@ void Server::checkClients() {
         SharedPtr<Client> client = (*it_a).second;
         client->receive(FD_ISSET(client->getFd(), &_readFds));
     }
-	map_iter  it_a = _users.begin();
-	while (it_a != _users.end())
+    for(map_iter it_a = _users.begin(); it_a != _users.end();it_a++)
 	{
         SharedPtr<Client> client = (*it_a).second;
         while (client->hasCommands()) {

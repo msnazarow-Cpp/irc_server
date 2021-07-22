@@ -21,7 +21,7 @@ private:
 
 	//std::vector<ServConfig> _servers;
 
-	std::list<SharedPtr<Client> > _new_users;
+	//std::list<SharedPtr<Client> > _new_users;
 	std::queue<Clients_map::iterator> _to_delete;
     Clients_map _users;
     std::map<std::string, Channel> _channels;
@@ -30,6 +30,7 @@ private:
 	fd_set _writeFds;
     size_t _number_of_uneregistered_clients;
 	fd_type _socket_fd;
+	fd_type _max_fd;
 	int _port;
 	std::string _host_ip;
 	sockaddr_in _sockaddr;
@@ -52,12 +53,18 @@ private:
 
 	Server(int port, const std::string& host_ip);
 	Server(int port, const std::string &host_ip, std::string password);
+
 	void initSocket();
 	void checkClients();
 	void checkSockets();
 	int Select();
 	int getMaxSockFd() const;
 	void newClient();
+	void update_fd_set(fd_type fd, fd_set *set)
+	{
+		_max_fd = std::max(fd, _max_fd);
+		FD_SET(fd, set);
+	};
 
 	class Error : public std::runtime_error {
 	 private:
