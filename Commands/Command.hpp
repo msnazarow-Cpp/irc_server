@@ -45,7 +45,15 @@ public:
 	public:
 		virtual char const *what() const throw();
 	};
-	class NotRegistered : public std::exception
+		class WrongChannelName : public std::exception
+	{
+	public:
+		virtual char const *what() const throw()
+		{
+			return ("Wrong channel name");
+		}
+	};
+	class TryToRegistWithoutPass : public std::exception
 	{
 		public:
 			virtual char const *what() const throw()
@@ -69,7 +77,22 @@ public:
 				return("You have already regiseter");
 			}
 	};
-
+	class AleadyPassAuthentificationException : public std::exception
+    {
+        public:
+			virtual char const* what() const throw()
+            {
+                return("You already input right password. Use NICK and USER to pass registration");
+            }
+    };
+	class NotRegistered : public std::exception
+	{
+		public:
+			virtual char const* what() const throw()
+            {
+                return("You are not registered");
+            }
+	};
 	virtual ~Command();
 };
 

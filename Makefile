@@ -25,6 +25,8 @@ COMM =		Commands/Command.o\
 			Commands/Privmsg.o\
 			Commands/Quit.o\
 			Commands/User.o\
+			Commands/RegisteredCommand.o\
+			Commands/OperatorsCommand.o\
 			Parse.o
 
 SRC_B		=	main.cpp\
@@ -48,7 +50,7 @@ COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 NAME = ft_irc
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) #-fsanitize=address 
+CPPFLAGS = -Wall -Werror -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address 
 INCLUDES = -ICommands -I. -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))

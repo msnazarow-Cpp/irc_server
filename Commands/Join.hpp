@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
-
-class Join: public Command
+#include "RegisteredCommand.hpp"
+#include <set>
+class Join: public RegisteredCommand
 {
 public:
     Join();
@@ -16,6 +16,7 @@ public:
 	virtual bool execute(Server & server, Client & client);
 	// virtual std::string getCommandName();
 private:
-    
+    std::vector<std::string> _channels;
+	std::vector<std::string> _keys;
 };
 

@@ -73,6 +73,11 @@ Client::~Client() {
 Client::Client(int fd) : _nickname(), _raw_data(), _raw_send(), _fd(fd), _status(unregistered) {
 }
 
+Client::Client(int fd, std::string host):Client(fd)
+{
+	_hostIp = host;	
+}
+
 
 void Client::raw_send() {
     static const size_t MAX_CHUNK_SIZE = pow(2, 20);
@@ -99,7 +104,7 @@ void Client::setStatus(Status status)
     _status = status;
 }
 SharedPtr<Command> Client::popCommand()  {
-    SharedPtr<Command> command = _received_commands.back();
+    SharedPtr<Command> command = _received_commands.front();
     _received_commands.pop();
     return command;
 }
@@ -110,7 +115,7 @@ void Client::addMsg(const std::string &msg) {
 
 void Client::Combine_messages() {
     while (!_received_msgs.empty()) {
-        _raw_send += _received_msgs.back().c_str();
+        _raw_send += _received_msgs.front().c_str();
         _received_msgs.pop();
     }
 }
@@ -149,6 +154,10 @@ void Client::set_username(std::string _username)
 std::string Client::get_hostname() const
 {
 	return this->_hostname;
+}
+
+void Client::set_hostname(std::string hostname) {
+	_hostname = hostname;
 }
 
 std::string Client::hostIp() const { return _hostIp; }

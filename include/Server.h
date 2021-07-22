@@ -59,14 +59,6 @@ private:
 	int getMaxSockFd() const;
 	void newClient();
 
-    class AleadyPassAuthentificationException : public std::exception
-    {
-        public:
-			virtual char const* what() const throw()
-            {
-                return("You already input right password. Use NICK and USER to pass registration");
-            }
-    };
 	class Error : public std::runtime_error {
 	 private:
 		Error();

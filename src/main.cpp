@@ -12,7 +12,7 @@ int main(int ac, char **av)
 
 	int port = atoi(av[1]); //TODO verifiy
 	std::cout << port << std::endl;
-    std::string host = ""; //std::string(av[2]); //TODO: (ip)
+    std::string host = "localhost"; //std::string(av[2]); //TODO: (ip)
 
 	try {
 		Server server(port, host, av[2]);

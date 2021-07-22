@@ -23,7 +23,7 @@ Nick *Nick::create(std::vector<std::string> arguments)
 bool Nick::execute(Server & server, Client & client)
 {
 	if (client.status() == unregistered)
-		throw NotRegistered();
+		throw TryToRegistWithoutPass();
 	if (server.getClients().count(_newnick) == 0)
 	{
 		server._users[_newnick] = server._users[client.get_nickname()];

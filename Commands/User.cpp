@@ -29,11 +29,15 @@ User *User::create(std::vector<std::string> arguments)
 bool User::execute(Server & server, Client & client)
 {
 	if (client.status() == unregistered)
-		throw NotRegistered();
+		throw TryToRegistWithoutPass();
 	if (client.status() < nick_having)
 		throw NoNickname();
 	if (client.status() == registered_user)
 		throw AlreadyRegistered();
+	client.set_realname(_realname);
+	client.set_username(_username);
+	client.set_hostname(_hostname);
+	client.setStatus(registered_user);
 	std::cout << "User works!" << std::endl;
 	return false;
 }

@@ -2,6 +2,7 @@
 #include "Server.h"
 #include "Client.h"
 #include "Command.hpp"
+#include "Privmsg.hpp"
 #ifndef SO_NOSIGPIPE
     #define SO_NOSIGPIPE 2 
 #endif // !SO_NOSIGPIPE
@@ -14,6 +15,7 @@ Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(hos
 }
 Server::Server(int port, const std::string &host_ip, std::string password) : Server(port, host_ip)
 {
+	_number_of_uneregistered_clients = 0;
 	_password = password;
 }
 void Server::initSocket() {
@@ -45,7 +47,7 @@ void Server::newClient() {
                             (socklen_t *) &addrlen); //TODO: clientAddr and Addrlen?!
     if (connection == -1)
         throw Error("connection");
-    SharedPtr<Client> new_client(new Client(connection));
+    SharedPtr<Client> new_client(new Client(connection, _host_ip));
     //TODO:: costil
     std::string name = "__unregistered__" + SSTR(_number_of_uneregistered_clients++);
     new_client->set_nickname(name);
@@ -60,13 +62,10 @@ const std::string & Server::getPassword() const
     return _password;
 }
 
-void Server::authentificate(Client & client) 
-{
-    if (client.status() >= pass_passing)
-        throw AleadyPassAuthentificationException();
-    client.setStatus(pass_passing);
-	client._received_msgs.push(returnSendableMessageToClient("Correct password", client));
-}
+// void Server::authentificate(Client & client) 
+// {
+  
+// }
 
 int Server::getMaxSockFd() const {
     int maxFd = _socket_fd;
@@ -122,7 +121,7 @@ void Server::checkClients() {
                 comm = client->popCommand();
                 comm->execute(*this,*client);
             }
-            catch(const std::exception& e)
+            catch(std::exception& e)
             {
                 client->_received_msgs.push(returnSendableMessageToClient(comm->getCommandName() + ": " + e.what(), *client));
             }
@@ -131,7 +130,7 @@ void Server::checkClients() {
     }
 	while (!_to_delete.empty())
 	{
-		_users.erase(_to_delete.back());
+		_users.erase(_to_delete.front());
 		_to_delete.pop();
 	}
     for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {

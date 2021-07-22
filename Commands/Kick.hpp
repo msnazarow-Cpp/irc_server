@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "OperatorsCommand.hpp"
 
-class Kick: public Command
+class Kick: public OperatorsCommand
 {
 public:
     Kick();

@@ -42,6 +42,7 @@ private:
 
 public:
     Client(int fd);
+    Client(int fd, std::string host);
     ~Client();
 	;
 

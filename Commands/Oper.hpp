@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "RegisteredCommand.hpp"
 
-class Oper: public Command
+class Oper: public RegisteredCommand
 {
 public:
     Oper();

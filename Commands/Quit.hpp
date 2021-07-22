@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "RegisteredCommand.hpp"
 
-class Quit : public Command
+class Quit : public RegisteredCommand
 {
 public:
     Quit();

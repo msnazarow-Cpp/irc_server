@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "OperatorsCommand.hpp"
 
-class Mode: public Command
+class Mode: public OperatorsCommand
 {
 public:
     Mode();

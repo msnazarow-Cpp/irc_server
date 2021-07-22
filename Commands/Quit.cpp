@@ -7,7 +7,7 @@ Quit::~Quit()
 {
 }
 
-Quit::Quit(std::vector<std::string> arguments): Command("QUIT", arguments)
+Quit::Quit(std::vector<std::string> arguments): RegisteredCommand("QUIT", arguments)
 {
 	size_t i = 0;
 	while (!arguments[i].empty())
@@ -21,6 +21,7 @@ Quit *Quit::create(std::vector<std::string> arguments)
 
 bool Quit::execute(Server & server, Client & client)
 {
+	RegisteredCommand::execute(server, client);
 	std::cout << "Quit works!" << std::endl;
 	return true;
 }

@@ -22,8 +22,15 @@ Pass *Pass::create(std::vector<std::string> arguments)
 
 bool Pass::execute(Server & server, Client & client)
 {
+	if (client.status() == registered_user)
+		throw AlreadyRegistered();
+	if (client.status() >= pass_passing)
+        throw AleadyPassAuthentificationException();
 	if (server.getPassword() == _password)
-		server.authentificate(client);
+  	{
+		client.setStatus(pass_passing);
+		client._received_msgs.push(returnSendableMessageToClient("Correct password", client));
+	}
 	else
 		throw Pass::PasswordWrongExcetion();
 	std::cout << "Pass works!" << std::endl;

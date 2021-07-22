@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "OperatorsCommand.hpp"
 
-class Kill: public Command
+class Kill: public OperatorsCommand
 {
 public:
     Kill();
