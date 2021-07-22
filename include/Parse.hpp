@@ -6,7 +6,7 @@ class Parse
 {
 
 private:
-	std::map<std::string, Command*> commands;
+	static std::map<std::string, Command*> commands;
 
 public:
 	Parse();
@@ -14,7 +14,7 @@ public:
 	Parse &operator=(const Parse &);
 	~Parse();
 
-	Command *make_command(std::string _message);
+	static Command *make_command(std::string _message);
 
 	class CommandNotValidExeption : public std::exception
 	{

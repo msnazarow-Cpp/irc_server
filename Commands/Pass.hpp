@@ -11,9 +11,16 @@ public:
 
     Pass &operator=(const Pass &);
     ~Pass();
-
+    class PasswordWrongExcetion: public std::exception
+    {
+		public: 
+        virtual const char * what() const throw()
+        {
+            return("Wrong Server Password");
+        }
+    };
 	virtual Pass *create(std::vector<std::string> arguments);
-	virtual void execute(const Server & server, const Client & client);
+	virtual bool execute(Server & server, Client & client);
 	// virtual std::string getCommandName();
 private:
     std::string _password;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "RegisteredCommand.hpp"
 
-class Oper: public Command
+class Oper: public RegisteredCommand
 {
 public:
     Oper();
@@ -13,7 +13,7 @@ public:
     ~Oper();
 
 	virtual Oper *create(std::vector<std::string> arguments);
-	virtual void execute(const Server & server, const Client & client);
+	virtual bool execute(Server & server, Client & client);
 	// virtual std::string getCommandName();
 
 private:

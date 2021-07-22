@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "OperatorsCommand.hpp"
 
-class Mode: public Command
+class Mode: public OperatorsCommand
 {
 public:
     Mode();
@@ -13,7 +13,7 @@ public:
     ~Mode();
 
 	virtual Mode *create(std::vector<std::string> arguments);
-	virtual void execute(const Server & server, const Client & client);
+	virtual bool execute(Server & server, Client & client);
 	// virtual std::string getCommandName();
 private:
     

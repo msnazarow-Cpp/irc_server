@@ -25,6 +25,8 @@ COMM =		Commands/Command.o\
 			Commands/Privmsg.o\
 			Commands/Quit.o\
 			Commands/User.o\
+			Commands/RegisteredCommand.o\
+			Commands/OperatorsCommand.o\
 			Parse.o
 
 SRC_B		=	main.cpp\
@@ -48,8 +50,8 @@ COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 NAME = ft_irc
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -g -MMD -D_GLIBCXX_DEBUG -I$(INCLUDES) #-fsanitize=address 
-INCLUDES = Commands
+CPPFLAGS = -Wall -Werror -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address 
+INCLUDES = -ICommands -I. -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))
 OBJ_B		=	$(addprefix $(BIN)/, $(SRC_B:cpp=o))
@@ -68,13 +70,13 @@ obj/Commands:
 	mkdir -p obj/Commands
 
 $(BIN)/%.o:./src/%.cpp  | $(BIN)
-	$(CC) $(FLAGS) -MMD -I./include -c $< -o $@
+	$(CC) $(FLAGS) $(CPPFLAGS) -MMD -I./include -c $< -o $@ 
 
 obj/%.o : %.cpp
 	$(CXX) -c $(CPPFLAGS) $< -o $@ 
 
 $(NAME): $(OBJ_M) $(COMM)
-	$(CC) $(FLAGS) $^ -o $@
+	$(CC) $(FLAGS) $(CPPFLAGS) $^ -o $@
 
 bonus: $(NAME_B)
 
@@ -88,6 +90,7 @@ $(BIN):
 
 clean:
 	@rm -rf $(BIN)
+	rm -rf obj
 	@echo "$(NAME) object files deleted"
 
 fclean: clean

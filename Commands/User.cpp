@@ -1,4 +1,5 @@
 #include "User.hpp"
+#include "Client.h"
 User::User()
 {
 }
@@ -16,7 +17,7 @@ User::User(std::vector<std::string> arguments): Command("USER", arguments)
 	_servername = arguments[2];
 	_realname = arguments[3];
 	size_t i = 4;
-	while (!arguments[i].empty())
+	while (i < arguments.size())
 		_realname += arguments[i++];
 }
 
@@ -25,9 +26,20 @@ User *User::create(std::vector<std::string> arguments)
 	return new User(arguments);
 }
 
-void User::execute(const Server & server, const Client & client)
+bool User::execute(Server & server, Client & client)
 {
+	if (client.status() == unregistered)
+		throw TryToRegistWithoutPass();
+	if (client.status() < nick_having)
+		throw NoNickname();
+	if (client.status() == registered_user)
+		throw AlreadyRegistered();
+	client.set_realname(_realname);
+	client.set_username(_username);
+	client.set_hostname(_hostname);
+	client.setStatus(registered_user);
 	std::cout << "User works!" << std::endl;
+	return false;
 }
 
 // std::string User::getCommandName() 

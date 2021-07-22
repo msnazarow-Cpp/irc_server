@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Command.hpp"
+#include "OperatorsCommand.hpp"
 
-class Kick: public Command
+class Kick: public OperatorsCommand
 {
 public:
     Kick();
@@ -13,7 +13,7 @@ public:
     ~Kick();
 
 	virtual Kick *create(std::vector<std::string> arguments);
-	virtual void execute(const Server & server, const Client & client);
+	virtual bool execute(Server & server, Client & client);
 	// virtual std::string getCommandName();
 private:
     
