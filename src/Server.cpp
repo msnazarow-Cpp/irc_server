@@ -79,9 +79,9 @@ int Server::getMaxSockFd() const {
 
 void Server::reloadFdSets() {
 	_max_fd = -1;
-	update_fd_set(_socket_fd, &_readFds);
 	FD_ZERO(&_readFds);
     FD_ZERO(&_writeFds);
+	update_fd_set(_socket_fd, &_readFds);
     std::map<std::string, SharedPtr<Client> >::const_iterator client;
     for (client = getClients().cbegin(); client != getClients().cend(); client++) {
     	SharedPtr<Client> p_client = client->second;
@@ -117,7 +117,6 @@ void Server::checkClients() {
                 client->_received_msgs.push(returnSendableMessageToClient(comm->getCommandName() + ": " + e.what(), *client));
             }
         }
-		it_a++;
     }
 	while (!_to_delete.empty())
 	{
