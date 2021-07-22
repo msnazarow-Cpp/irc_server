@@ -5,7 +5,6 @@
 # include <string>
 # include <exception>
 # include <sstream>
-# include "Location.h"
 
 #define SSTR( x ) static_cast< std::ostringstream & >( \
         ( std::ostringstream() << std::dec << x ) ).str()
@@ -39,8 +38,6 @@ namespace ft {
     	return res;
     }
     std::vector<std::string> split(const std::string& str, const std::string& delim);
-
-    std::string to_str(e_methods method);
 
     size_t to_num(const std::string &str, bool hex = false);
 

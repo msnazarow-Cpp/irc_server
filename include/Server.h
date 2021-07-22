@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Parser.h"
 #include "Client.h"
 #include "SharedPtr.h"
 #include <stdexcept>
@@ -8,6 +7,7 @@
 #include <set>
 #include <list>
 #include <Channel.h>
+#include <netinet/in.h>
 #include "Command.hpp"
 typedef int fd_type;
 
@@ -48,7 +48,6 @@ private:
 	friend class Privmsg;
 	friend class Quit;
 	friend class User;
-	explicit Server(const std::vector<ServConfig> &servers);
 
 	Server(int port, const std::string& host_ip);
 	Server(int port, const std::string &host_ip, std::string password);

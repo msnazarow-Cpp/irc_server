@@ -4,18 +4,14 @@ volatile bool loop = true;
 
 int main(int ac, char **av)
 {
-	if (ac != 3) {
+	if (ac != 4) {
 		std::cerr << "\033[1;31mTwo argument only!\033[0m" << std::endl;
 		return 1;
 	}
 	std::cout << std::endl << "\033[1;31m" << "WELCOME TO KINGINX" << "\033[0m" << std::endl << std::endl;
 
-	int port = atoi(av[1]); //TODO verifiy
-	std::cout << port << std::endl;
-    std::string host = "localhost"; //std::string(av[2]); //TODO: (ip)
-
 	try {
-		Server server(port, host, av[2]);
+		Server server(atoi(av[1]), av[2], av[3]);
 		while (loop)
 		{
 			int ret = server.Select();

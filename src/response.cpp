@@ -2,6 +2,8 @@
 #include "utils.h"
 #include <vector>
 #include <fstream>
+#include <iostream>
+
 #ifndef __APPLE__
     #include <sys/time.h>
 #endif // !__APPLE__

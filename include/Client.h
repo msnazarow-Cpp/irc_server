@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ServConfig.h"
 #include "Message.h"
 #include <sys/time.h>
 #include <cmath>

@@ -73,7 +73,7 @@ Client::~Client() {
 Client::Client(int fd) : _nickname(), _raw_data(), _raw_send(), _fd(fd), _status(unregistered) {
 }
 
-Client::Client(int fd, std::string host):Client(fd)
+Client::Client(int fd, std::string host):_fd(fd)
 {
 	_hostIp = host;	
 }

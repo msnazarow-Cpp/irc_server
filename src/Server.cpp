@@ -13,10 +13,14 @@ Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(hos
     FD_ZERO(&_readFds);
     initSocket();
 }
-Server::Server(int port, const std::string &host_ip, std::string password) : Server(port, host_ip)
+Server::Server(int port, const std::string &host_ip, std::string password) : _port(port), _host_ip(host_ip)
 {
 	_number_of_uneregistered_clients = 0;
 	_password = password;
+	bzero(&_sockaddr, sizeof(sockaddr_in));
+	FD_ZERO(&_writeFds);
+	FD_ZERO(&_readFds);
+	initSocket();
 }
 void Server::initSocket() {
     _sockaddr.sin_family = AF_INET; // ipV4
