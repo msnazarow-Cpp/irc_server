@@ -1,16 +1,13 @@
-NAME		=	ft_irc
+NAME		=	ircserv
 NAME_B		=	ft_irc_bonus
 
 SRC_M		=	main.cpp\
-				ServConfig.cpp\
 				Server.cpp\
-				Parser.cpp\
-				Location.cpp\
 				utils.cpp\
 				Client.cpp\
 				response.cpp\
 				Channel.cpp\
-				Message.cpp\
+				Message.cpp
 
 COMM =		Commands/Command.o\
 			Commands/Invite.o\
@@ -27,7 +24,7 @@ COMM =		Commands/Command.o\
 			Commands/User.o\
 			Commands/RegisteredCommand.o\
 			Commands/OperatorsCommand.o\
-			Parse.o
+			Commands/Parse.o
 
 SRC_B		=	main.cpp\
 				ServConfig_bonus.cpp \
@@ -48,7 +45,6 @@ SRC_B		=	main.cpp\
 				DeleteMethod.cpp
 COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
-NAME = ft_irc
 CXX = clang++ -std=c++98
 CPPFLAGS = -Wall -Werror -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address 
 INCLUDES = -ICommands -I. -Iinclude

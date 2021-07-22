@@ -9,6 +9,7 @@
 #include <Channel.h>
 #include <netinet/in.h>
 #include "Command.hpp"
+#include <errno.h>
 typedef int fd_type;
 
 class Server {
