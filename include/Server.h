@@ -50,6 +50,8 @@ private:
 	friend class Privmsg;
 	friend class Quit;
 	friend class User;
+	friend class Who;
+	friend class List;
 
 	Server(int port, const std::string& host_ip);
 	Server(int port, const std::string &host_ip, std::string password);
@@ -81,6 +83,3 @@ private:
 	const std::map<std::string, SharedPtr<Client> > & getClients() const;
 
 };
-
-std::string returnSendableMessageToClient(std::string message, const Client & client);
-

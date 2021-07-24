@@ -1,13 +1,14 @@
 #include "Parse.hpp"
 #include "commands_map.hpp"
-
+#include "Client.h"
 
 Parse::Parse() 
 {
 	commands = create_map<std::string, Command*>
 	("PASS", new Pass())("KICK", new Kick())("INVITE", new Invite())("JOIN", new Join())
 	("KILL", new Kill())("MODE", new Mode())("NICK", new Nick())("OPER", new Oper())
-	("PART", new Part())("PRIVMSG", new Privmsg())("QUIT", new Quit())("USER", new User());
+	("PART", new Part())("PRIVMSG", new Privmsg())("QUIT", new Quit())("USER", new User())
+	("LIST", new List())("WHO", new Who());
 }
 // Pass * Parse::pass;
 // Kick * Parse::kick;
@@ -44,35 +45,44 @@ Parse& Parse::operator=(const Parse &)
 	return (*this);
 }
 
-char const* Parse::CommandNotValidExeption::what() const throw()
-{
-	return ("Command not valid");
-}
-
-Command *Parse::make_command(std::string _message)
+Command *Parse::make_command(std::string _message, Client * client)
 {
 	if (_message.empty())
-		throw CommandNotValidExeption();
-
+		throw UknownCommand();
 	std::string _command_name;
+	std::string _last_argument;
 	std::stringstream _mysteam;
 	std::vector<std::string> _arguments(5);
 	size_t i = 0;
-
+	size_t pos = _message.find(':');
+	if (pos != _message.npos)
+		_last_argument = _message.substr(pos + 1, _message.size() - pos);
+	_message = _message.substr(0, pos);
 	_mysteam << _message;
 	while (_mysteam >> _arguments[i])
 	{
-		i++;
+		if (i == 0)
+		{
+			_command_name = _arguments[i];
+			for (size_t j = 0; j < _command_name.length(); j++)
+				_command_name[j] = toupper(_command_name[j]);
+			if (commands.count(_command_name) == 0)
+				throw UknownCommand();
+			else
+				client->touch_check = true;
+		}
+		i++;	
 		if (i >= _arguments.size())
 			_arguments.resize(_arguments.size() * 2);
+		if (i > 5)
+			throw ThoManyArgs();
 	}
 	_arguments.resize(i);
 	if (_arguments.size() == 0)
-		throw CommandNotValidExeption();
-	_command_name = _arguments[0];
-	if (commands.count(_command_name) == 0)
-		throw CommandNotValidExeption();
-	_arguments.erase(_arguments.begin());
+		throw Spaces();
 	
-	return (commands[_command_name]->create(_arguments));
+	_arguments.erase(_arguments.begin());
+	if (pos != _message.npos)
+		_arguments.push_back(_last_argument);
+	return (commands[_command_name]->create(_message, _arguments));
 }

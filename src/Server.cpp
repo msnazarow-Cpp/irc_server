@@ -113,9 +113,11 @@ void Server::checkClients() {
                 comm = client->popCommand();
                 comm->execute(*this,*client);
             }
-            catch(std::exception& e)
+            catch(Command::WrongChannelName &)
             {
-                client->_received_msgs.push(returnSendableMessageToClient(comm->getCommandName() + ": " + e.what(), *client));
+				ERR_NOSUCHCHANNEL;
+					client->_received_msgs.push(clientReply(Message(ERR_NOSUCHCHANNEL, comm->arguments()[1] + ":"), *client));
+				std::cout << client->_received_msgs.back() << std::endl;
             }
         }
     }
@@ -130,10 +132,7 @@ void Server::checkClients() {
     }
 }
 
-std::string returnSendableMessageToClient(std::string message, const Client & client)
-    {
-		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.hostIp() + " " + message + "\n");
-	}
+
 	
 std::string Server::hostIp() const
 	{

@@ -26,14 +26,20 @@ public:
 	Parse &operator=(const Parse &);
 	~Parse();
 
-	Command *make_command(std::string _message);
+	Command *make_command(std::string _message, Client * client);
 
-	class CommandNotValidExeption : public std::exception
+	class UknownCommand : public std::exception
 	{
-		public:
-			virtual char const* what() const throw();
-	};
 
+	};
+	class ThoManyArgs : public std::exception
+	{
+
+	};
+	class Spaces : public std::exception
+	{
+
+	};
 
 };
 #endif // __PARCE_H__

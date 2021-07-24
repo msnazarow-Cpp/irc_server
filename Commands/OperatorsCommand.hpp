@@ -5,7 +5,7 @@ class OperatorsCommand : public RegisteredCommand
 public:
 	OperatorsCommand();
 	OperatorsCommand(const OperatorsCommand &);
-	OperatorsCommand(std::string command_name, std::vector<std::string> arguments);
+	OperatorsCommand(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments);
 	OperatorsCommand &operator=(const OperatorsCommand &);
 	virtual bool execute(Server & server, Client & client);
 	~OperatorsCommand();

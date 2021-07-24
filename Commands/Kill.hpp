@@ -6,15 +6,15 @@ class Kill: public OperatorsCommand
 {
 public:
     Kill();
-	Kill(std::vector<std::string> arguments);
+	Kill(const std::string & full_command, const std::vector<std::string> & arguments);
     Kill(const Kill &);
 
     Kill &operator=(const Kill &);
     ~Kill();
 
-	virtual Kill *create(std::vector<std::string> arguments);
+	virtual Kill *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual std::string getCommandName();
+	// virtual const std::string &getCommandName();
 private:
     
 };

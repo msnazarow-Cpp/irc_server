@@ -6,15 +6,15 @@ class Quit : public RegisteredCommand
 {
 public:
     Quit();
-	Quit(std::vector<std::string>  arguments);
+	Quit(const std::string & full_command, const std::vector<std::string> & arguments);
     Quit(const Quit &);
 
     Quit &operator=(const Quit &);
     ~Quit();
 
-	virtual Quit *create(std::vector<std::string> arguments);
+	virtual Quit *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual std::string getCommandName();
+	// virtual const std::string &getCommandName();
 private:
     std::string _message;
 };

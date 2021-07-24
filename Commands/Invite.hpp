@@ -7,14 +7,14 @@ class Invite : public RegisteredCommand
 public:
     Invite();
     Invite(const Invite &);
-	Invite(std::vector<std::string> arguments);
+	Invite(const std::string & full_command, const std::vector<std::string> & arguments);
 
     Invite &operator=(const Invite &);
     ~Invite();
 
-	virtual Invite *create(std::vector<std::string> arguments);
+	virtual Invite *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual std::string getCommandName();
+	// virtual const std::string &getCommandName();
 private:
     
 };

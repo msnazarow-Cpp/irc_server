@@ -11,7 +11,7 @@ Privmsg::~Privmsg()
 {
 }
 
-Privmsg::Privmsg(std::vector<std::string> arguments): RegisteredCommand("PRIVMSG", arguments)
+Privmsg::Privmsg(const std::string & full_command, const std::vector<std::string> & arguments): RegisteredCommand(full_command, "PRIVMSG", arguments)
 {
 	if (arguments.size() < 2)
 		throw WrongArgumentsNumber();
@@ -25,35 +25,37 @@ Privmsg::Privmsg(std::vector<std::string> arguments): RegisteredCommand("PRIVMSG
 		_message += arguments[i++];
 }
 
-Privmsg *Privmsg::create(std::vector<std::string> arguments)
+Privmsg *Privmsg::create(const std::string & full_command, const std::vector<std::string> & arguments)
 {
-	return new Privmsg(arguments);
+	return new Privmsg(full_command, arguments);
 }
 
 bool Privmsg::execute(Server & server, Client & client)
 {
-	RegisteredCommand::execute(server, client);
+	if (RegisteredCommand::execute(server, client))
+		return(true);;
 	if (_recipient_type == user)
 	{
 		if (server._users.count(_recipient) == 0)
-			throw NosuchUser();
+			client._received_msgs.push(clientReply(Message(ERR_NOSUCHNICK,ERR_NOSUCHNICK_MESS),client));
+			//throw NosuchUser();
 		else
-			server._users[_recipient]->_received_msgs.push(_message + "\r\n");
+			server._users[_recipient]->_received_msgs.push(notification("PRIVMSG " + _recipient	+ " :" + _message, client));
 	}
 	else
 	{
 		if(server._channels.count(_recipient) == 0)
 			throw NosuchChannel();
-		std::map<std::string, std::set<char> > & users = server._channels[_recipient].users;
+		std::map<std::string, std::pair<Client *, std::set<char> > > & users = server._channels[_recipient].users;
 		if (users.count(client.get_nickname()) == 0)
 			throw NotJoinYet();
-		else if (users[client.get_nickname()].count('w') == 0)
+		else if (users[client.get_nickname()].second.count('w') == 0)
 			throw NotHaveWriteRight();
 		else
 		{
-			for (std::map<std::string, std::set<char> >::iterator it = users.begin(); it != users.end(); it++)
-				if ((*it).second.count('r'))
-					server._users[(*it).first]->_received_msgs.push(_message + "\r\n");
+			for (std::map<std::string, std::pair<Client *, std::set<char> > >::iterator it = users.begin(); it != users.end(); it++)
+				if ((*it).second.second.count('r') && (*it).first != client.get_nickname())
+					server._users[(*it).first]->_received_msgs.push(notification("PRIVMSG " + _recipient + " :" + _message, client));
 		}
 	}
 	

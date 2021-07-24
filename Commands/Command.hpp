@@ -5,6 +5,7 @@
 #include <map>
 #include <sstream>
 #include <iostream>
+#include "codes.hpp"
 class Server;
 class Client;
 
@@ -16,8 +17,8 @@ class Client;
 
 // class Server{
 // 	public:
-// 	std::string getPassword() const {return ("");}
-// 	std::string getHostname() const {return ("");}
+// 	const std::string &getPassword() const {return ("");}
+// 	const std::string &getHostname() const {return ("");}
 // 	void authentificate(const Client &client) const {}
 
 // 	/* std::string clientRespons(Command * command, const Client & client){
@@ -27,18 +28,25 @@ class Client;
 
 class Command
 {
-private:
+protected:
+	std::string _full_command;
 	std::string _command_name;
+	std::string _message;
 	std::vector<std::string> _arguments;
-
+	std::string _recipient;
+	enum type
+	{
+		channel,
+		user
+	} _recipient_type;
 public:
 	Command(/* args */);
-	Command(std::string command_name, std::vector<std::string> arguments);
+	Command(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments);
 	Command(const Command &);
 	Command &operator=(const Command &);
 	virtual bool execute(Server &server, Client &client) = 0;
-	virtual Command *create(std::vector<std::string> arguments) = 0;
-	std::string getCommandMessage() { return "command"; }
+	virtual Command *create(const std::string & full_command, const std::vector<std::string> & arguments) = 0;
+	virtual const std::string &getCommandMessage() { return _message;}
 	std::string &getCommandName();
 	class WrongArgumentsNumber : public std::exception
 	{
@@ -94,10 +102,11 @@ public:
             }
 	};
 	virtual ~Command();
+
+	const std::string &commandName() const { return _command_name; }
+
+	std::string fullCommand() const { return _full_command; }
+
+	std::vector<std::string> arguments() const { return _arguments; }
 };
 
-enum type
-{
-	channel,
-	user
-};

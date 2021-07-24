@@ -6,7 +6,7 @@ class Pass : public Command
 {
 public:
     Pass();
-	Pass(std::vector<std::string>  arguments);
+	Pass(const std::string & full_command, const std::vector<std::string> & arguments);
     Pass(const Pass &);
 
     Pass &operator=(const Pass &);
@@ -19,9 +19,9 @@ public:
             return("Wrong Server Password");
         }
     };
-	virtual Pass *create(std::vector<std::string> arguments);
+	virtual Pass *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual std::string getCommandName();
+	// virtual const std::string &getCommandName();
 private:
     std::string _password;
 };

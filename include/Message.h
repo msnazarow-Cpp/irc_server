@@ -1,15 +1,22 @@
 #pragma once
 #include <string>
 #include "utils.h"
-struct Message {
-    Message(const std::string &from, const std::string &data) : from(from), data(data) {
-        time = 0;
-    }
-    std::string from;
-    std::string data;
-    int time;
-    
-    std::string to_string() {
-        return "[" + SSTR(time) + "] " + from + " :" + data;
-    }
+class Message
+{
+public:
+	Message();
+	Message(const std::string & message);
+//	Message(std::string message);
+	Message(const std::string &code, const std::string & message);
+	Message(const Message &);
+	Message &operator=(const Message &);
+	~Message();
+
+	std::string code() const { return _code; }
+
+	const std::string &message() const { return _message; }
+
+private:
+	std::string _code;
+	std::string _message;
 };

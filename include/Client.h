@@ -10,7 +10,7 @@ class Parse;
 class Command;
 class Server;
 class Client;
-
+class Channel;
 // class Command{
 // public:
 //     Command(const std::string& basicString, const std::string&);
@@ -29,30 +29,35 @@ enum Status
 class Client {
 
 private:
+	std::string _hostname;
 	std::string _nickname;
 	std::string _username;
-	std::string _hostname;
 	std::string _realname;
 	std::string _raw_data;
     std::string _raw_send;
 	std::string _hostIp;
-    const int _fd;
+	const int _fd;
 	static Parse parse;
-    Status    _status;
 
 public:
+	bool pass_check;
+	bool nick_check;
+	bool user_check;
+	bool reg_check;
+	bool touch_check;
+	Client();
     Client(int fd);
     Client(int fd, std::string host);
     ~Client();
-	;
 
    //NEW
-    std::queue<std::string> _received_msgs;
-    std::queue<SharedPtr<Command> > _received_commands;
-    bool receive(bool);
-    bool response();
-    void raw_send();
-    bool send_waiting()
+	std::map <std::string, Channel *> _channels;
+	std::queue<std::string> _received_msgs;
+	std::queue<SharedPtr<Command> > _received_commands;
+	bool receive(bool);
+	bool response();
+	void raw_send();
+	bool send_waiting()
 	{
 		return !_raw_send.empty() || !_received_msgs.empty();
 	}
@@ -64,16 +69,19 @@ public:
     SharedPtr<Command> popCommand();
     bool hasCommands() const;
 
-    Status status() const;
-    void setStatus(Status status);
-	std::string get_nickname() const;
+	const std::string &get_nickname() const;
 	void set_nickname(const std::string& nickname);
-	std::string get_username() const; 
+	const std::string &get_username() const; 
 	void set_username(const std::string& username);
-	std::string get_hostname() const;
+	const std::string &get_hostname() const;
 	void set_hostname(const std::string& hostname);
-	std::string get_realname() const;
+	const std::string &get_realname() const;
 	void set_realname(const std::string& realname);
 
-	std::string hostIp() const;
+	const std::string & hostIp() const;
 };
+
+std::string notification(const Message & message, const Client & client);
+
+std::string notification(const Client & client, const Command * command);
+std::string clientReply(const Message & message, const Client & client);

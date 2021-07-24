@@ -28,40 +28,82 @@ bool Client::receive(bool fd_is_set) {
     char buffer[BUFFER_SIZE + 1];
     size_t read_ret = read(getFd(), buffer, BUFFER_SIZE);
     buffer[read_ret] = '\0';
-    _raw_data += buffer;
-    if (_raw_data.empty())
-        return false;
-
+	_raw_data += buffer;
+	if (_raw_data.empty())
+		return false;
+	std::cout << "DEBUG : \n" << buffer << std::endl;
     bool save_last = _raw_data.back() != '\n';
-    std::vector<std::string> splitted = ft::split(_raw_data, "\r\n");
-    if (save_last) {
-        _raw_data.assign(splitted.back());
-        splitted.erase(std::prev(splitted.end()));
-    } else
+    std::vector<std::string> splitted = ft::split(_raw_data, '\n');
+	for (size_t i = 0; i < splitted.size(); i++)
+		if (splitted[i][splitted[i].size() - 1] == '\r')
+			splitted[i].pop_back();
+	if (save_last) {
+		_raw_data.assign(splitted.back());
+		splitted.erase(std::prev(splitted.end()));
+	} else
         _raw_data.clear();
-
     for (size_t i = 0; i < splitted.size(); i++) {
 		SharedPtr<Command> comm;
-        try 
-		{
+        // try 
+		// {
 			if (!splitted[i].empty())
 			{
-				comm = SharedPtr<Command>(parse.make_command(splitted[i]));             //TODO: split problem... kostil
-                _received_commands.push(comm);
+				if(splitted[i].substr(0, 6) == "CAP LS")
+					_received_msgs.push(":" + hostIp() +  " CAP * LS :multi-prefix\n");
+				else if (splitted[i].substr(0,4) == "PING")
+					_received_msgs.push(":" + hostIp() +  " PONG\n");
+				else if (splitted[i].substr(0,21)  == "CAP REQ :multi-prefix")
+				{
+					_received_msgs.push(":" + hostIp() +  " CAP * ACK multi-prefix\n");
+				}
+				else if(splitted[i].substr(0,7) == "CAP END")
+					;
+				else
+				{
+					size_t pos = splitted[i].find_first_not_of(' ');
+					std::string firstcommand = splitted[i].substr(pos,splitted[i].size() - pos);
+					try
+					{
+						comm = SharedPtr<Command>(parse.make_command(splitted[i], this));
+                 		_received_commands.push(comm);
+					}
+					catch (Parse::UknownCommand)
+					{	
+						if (touch_check)
+							_received_msgs.push(clientReply(Message(ERR_UNKNOWNCOMMAND, firstcommand.substr(0,splitted[i].find(' ')) + " :"),*this));
+					}
+					catch (Parse::ThoManyArgs)
+					{	
+						if (touch_check)
+							_received_msgs.push(clientReply(Message(ERR_NEEDMOREPARAMS,firstcommand.substr(0,splitted[i].find(' ')) + " :Two many arguments"),*this));
+					}
+					catch (Command::WrongArgumentsNumber)
+					{	
+						if (touch_check)
+							_received_msgs.push(clientReply(Message(ERR_NEEDMOREPARAMS, firstcommand.substr(0,splitted[i].find(' ')) + " :Need more arguments"),*this));
+					}
+					catch (Command::WrongChannelName)
+					{	
+						if (touch_check)
+							_received_msgs.push(clientReply(Message(ERR_NOSUCHCHANNEL, firstcommand.substr(0,splitted[i].find(' ')) + " " + ERR_NOSUCHCHANNEL_MESS),*this));
+					}
+				}
 			}
-        }
-		catch(const Parse::CommandNotValidExeption & e)
-		{
-			_received_msgs.push(returnSendableMessageToClient(e.what(), *this));
-		}
-		catch(const Command::WrongArgumentsNumber &e)
-		{
-			_received_msgs.push(returnSendableMessageToClient(splitted[0] + ": " + e.what(), *this));
-		}
-		catch(const std::exception& e)
-		{
-			//TODO:_received_msgs.push("ТЫ ОШИБСЯ");
-		}
+        // }
+		// catch(const Parse::UknownCommand & e)
+		// {
+		// 	_received_msgs.push(notification(std::string(e.what()), *this));
+		// 	std::cout << _received_msgs.back() << std::endl;
+		// }
+		// catch(const Command::WrongArgumentsNumber &e)
+		// {
+		// 	_received_msgs.push(notification(splitted[0] + ": " + e.what(), *this));
+		// 	std::cout << _received_msgs.back() << std::endl;
+		// }
+		// catch(const std::exception& e)
+		// {
+		// 	std::cout << e.what() << std::endl;
+		// }
     }
 
     return true;
@@ -71,12 +113,12 @@ Client::~Client() {
     close(_fd);
 }
 
-Client::Client(int fd) : _nickname(), _raw_data(), _raw_send(), _fd(fd), _status(unregistered) {
+Client::Client(int fd) : _nickname(), _raw_data(), _raw_send(), _fd(fd), pass_check(0),nick_check(0),user_check(0),reg_check(0),touch_check(0) {
 }
 
-Client::Client(int fd, std::string host):_fd(fd)
+Client::Client(int fd, std::string host): _hostname(host), _nickname(), _raw_data(), _raw_send(), _fd(fd), pass_check(0),nick_check(0),user_check(0),reg_check(0),touch_check(0) 
 {
-	_hostIp = host;	
+	
 }
 
 
@@ -95,15 +137,6 @@ bool Client::hasCommands() const{
     return !_received_commands.empty();
 }
 
-Status Client::status() const
-{
-    return _status;
-}
-
-void Client::setStatus(Status status) 
-{
-    _status = status;
-}
 SharedPtr<Command> Client::popCommand()  {
     SharedPtr<Command> command = _received_commands.front();
     _received_commands.pop();
@@ -127,12 +160,12 @@ void Client::set_realname(const std::string& realname)
 	this->_realname = realname;
 }
 
-std::string Client::get_realname() const
+const std::string & Client::get_realname() const
 {
 	return this->_realname;
 }
 
-std::string Client::get_nickname() const
+const std::string & Client::get_nickname() const
 {
 	return this->_nickname;
 }
@@ -142,7 +175,7 @@ void Client::set_nickname(const std::string& nickname)
 	this->_nickname = nickname;
 }
 
-std::string Client::get_username() const
+const std::string & Client::get_username() const
 {
 	return this->_username;
 }
@@ -152,7 +185,7 @@ void Client::set_username(const std::string& username)
 	this->_username = username;
 }
 
-std::string Client::get_hostname() const
+const std::string & Client::get_hostname() const
 {
 	return this->_hostname;
 }
@@ -161,7 +194,7 @@ void Client::set_hostname(const std::string& hostname) {
 	_hostname = hostname;
 }
 
-std::string Client::hostIp() const { return _hostIp; }
+const std::string & Client::hostIp() const { return _hostIp; }
 
 
 // Command::Command(const std::string &command, const std::string &nick) : client_nick(nick) {
@@ -182,3 +215,25 @@ std::string Client::hostIp() const { return _hostIp; }
 //         std::cerr << "Catch error ..." << std::endl;
 //     }
 // }
+
+Client::Client(): _fd(-1)
+{
+	
+}
+
+std::string notification(const Message & message, const Client & client)
+    {
+		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_hostname() + " " + message.message() + "\r\n");
+	}
+
+std::string notification(const Client & client, const Command * command)
+    {
+		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_hostname() + " " + command->fullCommand() + "\r\n");
+	}
+	
+std::string clientReply(const Message & message, const Client & client) 
+	{
+	//	:irc.example.net "254" misha 1 :channels formed
+
+		return (":" + client.get_hostname() + " " + message.code() + " " + client.get_nickname() + " " + message.message() + "\r\n");
+	}

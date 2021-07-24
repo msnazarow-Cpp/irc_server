@@ -7,15 +7,15 @@ Kill::~Kill()
 {
 }
 
-Kill::Kill(std::vector<std::string> arguments): OperatorsCommand("KILL", arguments)
+Kill::Kill(const std::string & full_command, const std::vector<std::string> & arguments): OperatorsCommand(full_command, "KILL", arguments)
 {
 	if (arguments.size() < 2)
 		throw WrongArgumentsNumber();
 }
 
-Kill *Kill::create(std::vector<std::string> arguments)
+Kill *Kill::create(const std::string & full_command, const std::vector<std::string> & arguments)
 {
-	return new Kill(arguments);
+	return new Kill(full_command, arguments);
 }
 
 bool Kill::execute(Server & server, Client & client)

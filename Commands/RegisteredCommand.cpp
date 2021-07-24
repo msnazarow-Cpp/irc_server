@@ -1,6 +1,6 @@
 #include "RegisteredCommand.hpp"
 #include "Client.h"
-
+#include "Server.h"
 RegisteredCommand::RegisteredCommand()
 {
 }
@@ -16,16 +16,17 @@ RegisteredCommand& RegisteredCommand::operator=(const RegisteredCommand &)
 }
 
 bool RegisteredCommand::execute(Server & server, Client & client) {
-	if (client.status() != registered_user)
-		throw NotRegistered();
-	return false;
+	client.touch_check = true;
+	if (!client.reg_check)
+		client._received_msgs.push(clientReply(Message(ERR_NOTREGISTERED, ":"),client));
+	return !client.reg_check;
 }
 
 RegisteredCommand::~RegisteredCommand()
 {
 }
-RegisteredCommand::RegisteredCommand(std::string command_name, std::vector<std::string> arguments)
-	: Command(command_name, arguments)
+RegisteredCommand::RegisteredCommand(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments)
+	: Command(full_command, command_name, arguments)
 {
 	
 }

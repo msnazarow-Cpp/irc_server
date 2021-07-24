@@ -7,15 +7,15 @@ Kick::~Kick()
 {
 }
 
-Kick::Kick(std::vector<std::string> arguments): OperatorsCommand("KICK", arguments)
+Kick::Kick(const std::string & full_command, const std::vector<std::string> & arguments): OperatorsCommand(full_command, "KICK", arguments)
 {
 	if (arguments.size() < 2)
 		throw WrongArgumentsNumber();
 }
 
-Kick *Kick::create(std::vector<std::string> arguments)
+Kick *Kick::create(const std::string & full_command, const std::vector<std::string> & arguments)
 {
-	return new Kick(arguments);
+	return new Kick(full_command, arguments);
 }
 
 bool Kick::execute(Server & server, Client & client)

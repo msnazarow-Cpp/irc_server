@@ -6,7 +6,7 @@ class Privmsg : public RegisteredCommand
 {
 public:
     Privmsg();
-	Privmsg(std::vector<std::string>  arguments);
+	Privmsg(const std::string & full_command, const std::vector<std::string> & arguments);
     Privmsg(const Privmsg &);
 
     Privmsg &operator=(const Privmsg &);
@@ -43,12 +43,10 @@ public:
 				return ("You do not have right to write in this channel");
 			}
 	};
-	virtual Privmsg *create(std::vector<std::string> arguments);
+	virtual Privmsg *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual std::string getCommandName();
+	// virtual const std::string &getCommandName();
 private:
 	std::string _message;
-    std::string _recipient;
-	type _recipient_type;
 };
 

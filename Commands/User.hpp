@@ -6,15 +6,15 @@ class User : public Command
 { 
 public:
     User();
-	User(std::vector<std::string>  arguments);
+	User(const std::string & full_command, const std::vector<std::string> & arguments);
     User(const User &);
 
     User &operator=(const User &);
     ~User();
 
-	virtual User *create(std::vector<std::string> arguments);
+	virtual User *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual std::string getCommandName();
+	// virtual const std::string &getCommandName();
 private:
     std::string _username;
 	std::string _hostname;

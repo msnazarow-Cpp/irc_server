@@ -5,11 +5,12 @@ SRC_M		=	main.cpp\
 				Server.cpp\
 				utils.cpp\
 				Client.cpp\
-				response.cpp\
 				Channel.cpp\
 				Message.cpp
 
 COMM =		Commands/Command.o\
+			Commands/List.o\
+			Commands/Who.o\
 			Commands/Invite.o\
 			Commands/Join.o\
 			Commands/Kick.o\

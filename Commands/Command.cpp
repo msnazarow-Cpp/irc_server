@@ -3,7 +3,7 @@
 Command::Command(/* args */)
 {
 }
-Command::Command(std::string command_name, std::vector<std::string> arguments) :_command_name(command_name), _arguments(arguments)
+Command::Command(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments) : _full_command(full_command), _command_name(command_name), _arguments(arguments)
 {
 	
 }

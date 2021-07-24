@@ -12,6 +12,8 @@
 #include "Privmsg.hpp"
 #include "Quit.hpp"
 #include "User.hpp"
+#include "List.hpp"
+#include "Who.hpp"
 
 template <typename T, typename U>
 class create_map

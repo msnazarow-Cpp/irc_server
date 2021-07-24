@@ -1,5 +1,18 @@
-//
-// Created by Santiago Bashir on 7/21/21.
-//
 
 #include "Channel.h"
+
+Channel::Channel()
+{ 
+}
+
+Channel::~Channel()
+{
+}
+Channel::Channel(const Channel &)
+	: admin(),
+	  users(),
+	  key(),
+	  priveleges()
+{
+	
+}

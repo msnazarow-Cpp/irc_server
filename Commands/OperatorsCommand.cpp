@@ -4,8 +4,8 @@ OperatorsCommand::OperatorsCommand(const OperatorsCommand &)
 	
 }
 
-OperatorsCommand::OperatorsCommand(std::string command_name, std::vector<std::string> arguments)
-	: RegisteredCommand(command_name, arguments)
+OperatorsCommand::OperatorsCommand(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments)
+	: RegisteredCommand(full_command, command_name, arguments)
 {
 	
 }

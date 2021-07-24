@@ -7,20 +7,21 @@ Oper::~Oper()
 {
 }
 
-Oper::Oper(std::vector<std::string> arguments): RegisteredCommand("OPER", arguments)
+Oper::Oper(const std::string & full_command, const std::vector<std::string> & arguments): RegisteredCommand(full_command, "OPER", arguments)
 {
 	if (arguments.size() < 2)
 		throw WrongArgumentsNumber();
 }
 
-Oper *Oper::create(std::vector<std::string> arguments)
+Oper *Oper::create(const std::string & full_command, const std::vector<std::string> & arguments)
 {
-	return new Oper(arguments);
+	return new Oper(full_command, arguments);
 }
 
 bool Oper::execute(Server & server, Client & client)
 {
-	RegisteredCommand::execute(server, client);
+	if (RegisteredCommand::execute(server, client))
+		return(true);;
 	std::cout << "Oper works!" << std::endl;
 	return false;
 }

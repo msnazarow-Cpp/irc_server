@@ -8,7 +8,7 @@ public:
 	RegisteredCommand();
 	RegisteredCommand(const RegisteredCommand &);
 	RegisteredCommand &operator=(const RegisteredCommand &);
-	RegisteredCommand(std::string command_name, std::vector<std::string> arguments);
+	RegisteredCommand(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
 	~RegisteredCommand();
 
