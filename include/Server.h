@@ -13,8 +13,9 @@
 typedef int fd_type;
 
 class Server {
-private:
+public:
 	typedef std::map<std::string, SharedPtr<Client> > Clients_map;
+private:
 	Server();
 	Server(const Server &);
 	void operator=(const Server &);
@@ -22,7 +23,7 @@ private:
 	//std::vector<ServConfig> _servers;
 
 	//std::list<SharedPtr<Client> > _new_users;
-	std::queue<Clients_map::iterator> _to_delete;
+	std::vector<Clients_map::iterator> _to_delete;
     Clients_map _users;
     std::map<std::string, Channel> _channels;
     // TODO: std::map<std::string, Channel> _channels;
@@ -52,7 +53,8 @@ private:
 	friend class User;
 	friend class Who;
 	friend class List;
-
+	friend class Notice;
+	friend class Client;
 	Server(int port, const std::string& host_ip);
 	Server(int port, const std::string &host_ip, std::string password);
 

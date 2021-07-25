@@ -8,7 +8,7 @@ Parse::Parse()
 	("PASS", new Pass())("KICK", new Kick())("INVITE", new Invite())("JOIN", new Join())
 	("KILL", new Kill())("MODE", new Mode())("NICK", new Nick())("OPER", new Oper())
 	("PART", new Part())("PRIVMSG", new Privmsg())("QUIT", new Quit())("USER", new User())
-	("LIST", new List())("WHO", new Who());
+	("LIST", new List())("WHO", new Who())("NOTICE", new Notice());
 }
 // Pass * Parse::pass;
 // Kick * Parse::kick;
@@ -45,7 +45,7 @@ Parse& Parse::operator=(const Parse &)
 	return (*this);
 }
 
-Command *Parse::make_command(std::string _message, Client * client)
+SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 {
 	if (_message.empty())
 		throw UknownCommand();
@@ -84,5 +84,5 @@ Command *Parse::make_command(std::string _message, Client * client)
 	_arguments.erase(_arguments.begin());
 	if (pos != _message.npos)
 		_arguments.push_back(_last_argument);
-	return (commands[_command_name]->create(_message, _arguments));
+	return (SharedPtr<Command> (commands[_command_name]->create(_message, _arguments)) );
 }

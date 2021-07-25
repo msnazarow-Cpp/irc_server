@@ -11,6 +11,7 @@ public:
 
     Mode &operator=(const Mode &);
     ~Mode();
+	std::vector<std::string> banparse(const std::string &ban);
 
 	virtual Mode *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);

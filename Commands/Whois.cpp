@@ -27,11 +27,11 @@ bool Whois::execute(Server & server, Client & client)
 {
 	if (RegisteredCommand::execute(server, client))
 		return(true);;
-	//client._received_msgs.push(clientReply(Message(RPL_WHOisREPLY, RPL_WHOisSTART_MESS),client));
+	//client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOisREPLY, RPL_WHOisSTART_MESS),client));
 	for (std::map<std::string, Channel>::iterator it = server._channels.begin(); it != server._channels.end(); it++)
-		for (std::map<std::string, std::pair<Client *, std::set<char> > >::iterator it_u = (*it).second.users.begin(); it_u != (*it).second.users.end(); it_u++)
-			client._received_msgs.push(clientReply(Message(RPL_WHOisREPLY, response(it, server, *(*it_u).second.first)),client));
-	client._received_msgs.push(clientReply(Message(RPL_ENDOFWHOis, RPL_ENDOFWHOis_MESS),client));
+		for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it_u = (*it).second.users.begin(); it_u != (*it).second.users.end(); it_u++)
+			client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOisREPLY, response(it, server, *(*it_u).second.first)),client));
+	client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFWHOis, RPL_ENDOFWHOis_MESS),client));
 	std::cout << "Whois works!" << std::endl;
 	return true;
 }

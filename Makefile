@@ -9,6 +9,7 @@ SRC_M		=	main.cpp\
 				Message.cpp
 
 COMM =		Commands/Command.o\
+			Commands/Notice.o\
 			Commands/List.o\
 			Commands/Who.o\
 			Commands/Invite.o\
@@ -47,7 +48,7 @@ SRC_B		=	main.cpp\
 COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address 
+CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) #-fsanitize=address 
 INCLUDES = -ICommands -I. -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))
@@ -55,9 +56,6 @@ OBJ_B		=	$(addprefix $(BIN)/, $(SRC_B:cpp=o))
 DEP			=	$(OBJ_M:%.o=%.d) \
 				$(OBJ_B:%.o=%.d) \
 				$(COMM:.o=.d)
-CC			=	clang++
-FLAGS		=	-Wall -Wextra -Werror #-std=c++98
-
 .PHONY: all clean fclean re
 
 all: obj/Commands $(NAME)
@@ -67,13 +65,13 @@ obj/Commands:
 	mkdir -p obj/Commands
 
 $(BIN)/%.o:./src/%.cpp  | $(BIN)
-	$(CC) $(FLAGS) $(CPPFLAGS) -MMD -I./include -c $< -o $@ 
+	$(CXX) -c $(CPPFLAGS) $< -o $@ 
 
 obj/%.o : %.cpp
 	$(CXX) -c $(CPPFLAGS) $< -o $@ 
 
 $(NAME): $(OBJ_M) $(COMM)
-	$(CC) $(FLAGS) $(CPPFLAGS) $^ -o $@
+	$(CXX) $(CPPFLAGS) $^ -o $@
 
 bonus: $(NAME_B)
 

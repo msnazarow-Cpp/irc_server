@@ -6,6 +6,7 @@
 #include <queue>
 #include "SharedPtr.h"
 #include "Message.h"
+#include <set>
 class Parse;
 class Command;
 class Server;
@@ -36,10 +37,12 @@ private:
 	std::string _raw_data;
     std::string _raw_send;
 	std::string _hostIp;
+	
 	const int _fd;
 	static Parse parse;
 
 public:
+	std::set<char> _priveleges;
 	bool pass_check;
 	bool nick_check;
 	bool user_check;
@@ -54,7 +57,8 @@ public:
 	std::map <std::string, Channel *> _channels;
 	std::queue<std::string> _received_msgs;
 	std::queue<SharedPtr<Command> > _received_commands;
-	bool receive(bool);
+	//bool receive(bool);
+	bool receive(bool, Server & server);
 	bool response();
 	void raw_send();
 	bool send_waiting()
@@ -79,9 +83,11 @@ public:
 	void set_realname(const std::string& realname);
 
 	const std::string & hostIp() const;
+
+	//const std::set<char> & priveleges() const { return _priveleges; }
 };
 
 std::string notification(const Message & message, const Client & client);
 
 std::string notification(const Client & client, const Command * command);
-std::string clientReply(const Message & message, const Client & client);
+std::string clientReply(const std::string & hostIp, const Message & message, const Client & client);

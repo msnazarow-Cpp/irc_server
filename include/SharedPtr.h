@@ -36,7 +36,9 @@ class SharedPtr {
 	T *get() const {
 		return ptr_;
 	}
-
+	T *base() const{
+		return ptr_;
+	}
 	void reset(T *ptr = 0) {
 		(*counter)--;
 		if (*counter == 0) {
@@ -60,3 +62,90 @@ class SharedPtr {
 	int *counter;
 	T *ptr_;
 };
+
+template <typename T>
+	bool
+	operator==(const SharedPtr<T> lhs,
+			const SharedPtr<T> rhs)
+	{
+		return (lhs.base() == rhs.base());
+	}
+	template<typename T_L, typename T_R>
+	bool
+	operator==(const SharedPtr<T_L> lhs,
+			const SharedPtr<T_R> rhs)
+	{
+		return (lhs.base() == rhs.base());
+	}
+	template <typename T>
+	bool
+	operator!=(const SharedPtr<T> lhs,
+			const SharedPtr<T> rhs)
+	{
+		return (lhs.base() != rhs.base());
+	}
+	template<typename T_L, typename T_R>
+	bool
+	operator!=(const SharedPtr<T_L> lhs,
+			const SharedPtr<T_R> rhs)
+	{
+		return (lhs.base() != rhs.base());
+	}
+	template <typename T>
+	bool
+	operator<(const SharedPtr<T> lhs,
+			const SharedPtr<T> rhs)
+	{
+		return (lhs.base() < rhs.base());
+	}
+	template<typename T_L, typename T_R>
+	bool
+	operator<(const SharedPtr<T_L> lhs,
+			const SharedPtr<T_R> rhs)
+	{
+		return (lhs.base() < rhs.base());
+	}
+	template <typename T>
+	bool
+	operator>(const SharedPtr<T> lhs,
+			const SharedPtr<T> rhs)
+	{
+		return (lhs.base() > rhs.base());
+	}
+	template<typename T_L,
+			typename T_R>
+	bool
+	operator>(const SharedPtr<T_L> lhs,
+			const SharedPtr<T_R> rhs)
+	{
+		return (lhs.base() > rhs.base());
+	}
+	template <typename T>
+	bool
+	operator<=(const SharedPtr<T> lhs,
+			const SharedPtr<T> rhs)
+	{
+		return (lhs.base() <= rhs.base());
+	}
+	template<typename T_L, typename T_R>
+	bool
+	operator<=(const SharedPtr<T_L> lhs,
+			const SharedPtr<T_R> rhs)
+	{
+		return (lhs.base() <= rhs.base());
+	}
+	template <typename T>
+	bool
+	operator>=(const SharedPtr<T> lhs,
+			const SharedPtr<T> rhs)
+	{
+		return (lhs.base() >= rhs.base());
+	}
+	template<typename T_L,
+			typename T_R>
+	bool
+	operator>=(const SharedPtr<T_L> lhs,
+			const SharedPtr<T_R> rhs)
+	{
+		return (lhs.base() >= rhs.base());
+	}

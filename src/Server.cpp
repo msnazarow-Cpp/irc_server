@@ -4,10 +4,29 @@
 #include "Client.h"
 #include "Command.hpp"
 #include "Privmsg.hpp"
+#include <algorithm>
+#include <memory>
+
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #ifndef SO_NOSIGPIPE
     #define SO_NOSIGPIPE 2 
 #endif // !SO_NOSIGPIPE
 
+
+// bool mesEmpty(const Server::Clients_map::iterator & it)
+// {
+// 	//(*_to_delete[i]).second->_received_msgs.empty()
+// 	return((*it).second->_received_msgs.empty());
+// }
+
+// bool iterZero(const Server::Clients_map::iterator & it)
+// {
+// 	return (it == Server::Clients_map::iterator(NULL));
+// }
 
 Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
     bzero(&_sockaddr, sizeof(sockaddr_in));
@@ -51,10 +70,12 @@ void Server::newClient() {
     int connection = accept(this->_socket_fd,
                             (struct sockaddr *) &clientAddr,
                             (socklen_t *) &addrlen); //TODO: clientAddr and Addrlen?!
+							
     if (connection == -1)
         throw Error("connection");
     SharedPtr<Client> new_client(new Client(connection, _host_ip));
     //TODO:: costil
+	new_client->set_hostname(inet_ntoa(clientAddr.sin_addr));
     std::string name = "__unregistered__" + SSTR(_number_of_uneregistered_clients++);
     new_client->set_nickname(name);
     std::cerr << "New user: " << name << std::endl;
@@ -83,7 +104,7 @@ void Server::reloadFdSets() {
     FD_ZERO(&_writeFds);
 	update_fd_set(_socket_fd, &_readFds);
     std::map<std::string, SharedPtr<Client> >::const_iterator client;
-    for (client = getClients().cbegin(); client != getClients().cend(); client++) {
+    for (client = getClients().begin(); client != getClients().end(); client++) {
     	SharedPtr<Client> p_client = client->second;
     	if(p_client->send_waiting())
 			update_fd_set(p_client->getFd(), &_writeFds);
@@ -100,7 +121,7 @@ void Server::checkClients() {
 
     for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {
         SharedPtr<Client> client = (*it_a).second;
-        client->receive(FD_ISSET(client->getFd(), &_readFds));
+        client->receive(FD_ISSET(client->getFd(), &_readFds), *this);
     }
 
     for(map_iter it_a = _users.begin(); it_a != _users.end();it_a++)
@@ -116,24 +137,36 @@ void Server::checkClients() {
             catch(Command::WrongChannelName &)
             {
 				ERR_NOSUCHCHANNEL;
-					client->_received_msgs.push(clientReply(Message(ERR_NOSUCHCHANNEL, comm->arguments()[1] + ":"), *client));
+					client->_received_msgs.push(clientReply(this->hostIp(), Message(ERR_NOSUCHCHANNEL, comm->arguments()[0] + ":"), *client));
 				std::cout << client->_received_msgs.back() << std::endl;
             }
         }
     }
-	while (!_to_delete.empty())
-	{
-		_users.erase(_to_delete.front());
-		_to_delete.pop();
-	}
+
+	// for (size_t i = 0; i < _to_delete.size(); i++)
+	// {
+		
+	// }
+	// if (!_to_delete.empty())
+	// 	std::remove_if(_to_delete.begin(),_to_delete.end(),iterZero);
     for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {
         if (FD_ISSET((*it_a).second->getFd(), &_writeFds))
             (*it_a).second->response();
     }
+	size_t i = 0;
+	while (i < _to_delete.size())
+	{
+		if ((*_to_delete[i]).second->_received_msgs.empty())
+		{	
+			_users.erase(_to_delete[i]);
+			_to_delete.erase(_to_delete.begin() + i);
+		}
+		else
+		i++;
+	}
 }
 
 
-	
 std::string Server::hostIp() const
 	{
 		return _host_ip;

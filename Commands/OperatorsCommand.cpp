@@ -14,7 +14,7 @@ OperatorsCommand &OperatorsCommand::operator=(const OperatorsCommand &) {
 	return (*this);
 }
 
-bool OperatorsCommand::execute(Server & server, Client & client) 
+bool OperatorsCommand::execute(Server &, Client &) 
 {
 	return false;
 }

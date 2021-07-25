@@ -26,7 +26,7 @@ public:
 	Parse &operator=(const Parse &);
 	~Parse();
 
-	Command *make_command(std::string _message, Client * client);
+	SharedPtr<Command> make_command(std::string _message, Client *client);
 
 	class UknownCommand : public std::exception
 	{

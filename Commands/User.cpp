@@ -1,6 +1,8 @@
 #include "User.hpp"
 #include "Client.h"
 #include "Server.h"
+#include "unistd.h"
+
 User::User()
 {
 }
@@ -14,8 +16,8 @@ User::User(const std::string & full_command, const std::vector<std::string> & ar
 	if (arguments.size() != 4)
 		throw WrongArgumentsNumber();
 	_username = arguments[0];
-	_hostname = arguments[1];
-	_servername = arguments[2];
+	// _hostname = arguments[1];
+	// _servername = arguments[2];
 	_realname = arguments[3];
 	// size_t i = 4;
 	// while (i < arguments.size())
@@ -32,7 +34,7 @@ bool User::execute(Server & server, Client & client)
 	client.touch_check = true;
 	if (client.user_check)
 	{	
-		client._received_msgs.push(clientReply(Message(ERR_ALREADYREGISTRED, ":"), client));
+		client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_ALREADYREGISTRED, ":"), client));
 		return false;
 	}
 	client.user_check = true;
@@ -42,11 +44,15 @@ bool User::execute(Server & server, Client & client)
 	if (client.nick_check && client.user_check){
 		if (client.pass_check)
 			{
-				client._received_msgs.push(clientReply(Message("001", ":Welcome abroad!"),client));
+				client._received_msgs.push(clientReply(server.hostIp(), Message("001", ":Welcome abroad!"),client));
 				client.reg_check = true;
 			}
 		else
-			client._received_msgs.push("ERROR :Access denied: Bad password?\r\n");
+			{
+				client._received_msgs.push("ERROR :Access denied: Bad password?\r\n");
+				//close(client.getFd()); // ТаК??
+				server._to_delete.push_back(server._users.find(client.get_nickname()));
+			}
 	}
 	return false;
 }

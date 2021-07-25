@@ -25,7 +25,11 @@ class Client;
 // 		return (":" + client.nickname + "!~" + client.nickname + "@" + getHostname() + " " + command->getCommandMessage() );
 // 	} */
 // };
-
+enum type
+	{
+		channel,
+		user
+	};
 class Command
 {
 protected:
@@ -33,12 +37,9 @@ protected:
 	std::string _command_name;
 	std::string _message;
 	std::vector<std::string> _arguments;
-	std::string _recipient;
-	enum type
-	{
-		channel,
-		user
-	} _recipient_type;
+	std::vector<std::string> _recipients;
+	std::vector<type> _recipients_types;
+	//std::vector<std::pair< std::string, type> > _recipients;
 public:
 	Command(/* args */);
 	Command(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments);
@@ -102,6 +103,7 @@ public:
             }
 	};
 	virtual ~Command();
+	class ErrNickname : public std::exception {};
 
 	const std::string &commandName() const { return _command_name; }
 

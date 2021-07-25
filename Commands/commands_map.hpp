@@ -14,7 +14,7 @@
 #include "User.hpp"
 #include "List.hpp"
 #include "Who.hpp"
-
+#include "Notice.hpp"
 template <typename T, typename U>
 class create_map
 {

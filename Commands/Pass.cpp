@@ -25,7 +25,7 @@ bool Pass::execute(Server & server, Client & client)
 	client.touch_check = true;
 	if (client.pass_check)
 		{
-			client._received_msgs.push(clientReply(Message(ERR_ALREADYREGISTRED, ":"), client)); 
+			client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_ALREADYREGISTRED, ":"), client)); 
 			return false;
 		}
 	if (server.getPassword() == _password)
@@ -33,7 +33,7 @@ bool Pass::execute(Server & server, Client & client)
 	if (client.nick_check && client.user_check){
 	if (client.pass_check)
 			{
-				client._received_msgs.push(clientReply(Message("001", ":Welcome abroad!"),client));
+				client._received_msgs.push(clientReply(server.hostIp(), Message("001", ":Welcome abroad!"),client));
 				client.reg_check = true;
 			}
 	else

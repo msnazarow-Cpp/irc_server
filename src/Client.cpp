@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <Parse.hpp>
 #include "Command.hpp"
-
+#include <stdint.h>
 #define BUFFER_SIZE 10000
 
 Parse Client::parse;
@@ -21,27 +21,40 @@ int Client::getFd() const {
     return _fd;
 }
 
-bool Client::receive(bool fd_is_set) {
+bool Client::receive(bool fd_is_set, Server &server) {
     if (!fd_is_set)
         return false;
     //int ret = 1;
     char buffer[BUFFER_SIZE + 1];
-    size_t read_ret = read(getFd(), buffer, BUFFER_SIZE);
-    buffer[read_ret] = '\0';
+    size_t read_ret = read(getFd(), buffer, BUFFER_SIZE); //Происходит дичь, рид возвращает 18446744073709551615
+	//strart dich
+	if (read_ret == 0)
+	{
+		server._to_delete.push_back(server._users.find(_nickname));
+		return true;
+	}
+	else if (read_ret == SIZE_MAX)
+	{
+		return true;
+	}
+	// !end dich
+	buffer[read_ret] = '\0';
 	_raw_data += buffer;
 	if (_raw_data.empty())
 		return false;
 	std::cout << "DEBUG : \n" << buffer << std::endl;
-    bool save_last = _raw_data.back() != '\n';
+    bool save_last = _raw_data[_raw_data.size() - 1] != '\n';
     std::vector<std::string> splitted = ft::split(_raw_data, '\n');
 	for (size_t i = 0; i < splitted.size(); i++)
 		if (splitted[i][splitted[i].size() - 1] == '\r')
-			splitted[i].pop_back();
-	if (save_last) {
-		_raw_data.assign(splitted.back());
-		splitted.erase(std::prev(splitted.end()));
-	} else
-        _raw_data.clear();
+			splitted[i].erase(splitted[i].size() - 1);
+	if (save_last) 
+	{
+		_raw_data.assign(splitted[_raw_data.size() - 1]);
+		splitted.erase(splitted.end() - 1);
+	} 
+	else
+		_raw_data.clear();
     for (size_t i = 0; i < splitted.size(); i++) {
 		SharedPtr<Command> comm;
         // try 
@@ -49,13 +62,11 @@ bool Client::receive(bool fd_is_set) {
 			if (!splitted[i].empty())
 			{
 				if(splitted[i].substr(0, 6) == "CAP LS")
-					_received_msgs.push(":" + hostIp() +  " CAP * LS :multi-prefix\n");
-				else if (splitted[i].substr(0,4) == "PING")
-					_received_msgs.push(":" + hostIp() +  " PONG\n");
+					_received_msgs.push(":" + hostIp() +  " CAP * LS :multi-prefix\r\n");
+				else if (splitted[i].substr(0,4) == "PING" || splitted[i].substr(0,4) == "PONG")
+					_received_msgs.push(":" + hostIp() + " PONG " + hostIp() + " :" + _nickname + "\r\n");
 				else if (splitted[i].substr(0,21)  == "CAP REQ :multi-prefix")
-				{
-					_received_msgs.push(":" + hostIp() +  " CAP * ACK multi-prefix\n");
-				}
+					_received_msgs.push(":" + hostIp() +  " CAP * ACK multi-prefix\r\n");
 				else if(splitted[i].substr(0,7) == "CAP END")
 					;
 				else
@@ -70,23 +81,29 @@ bool Client::receive(bool fd_is_set) {
 					catch (Parse::UknownCommand)
 					{	
 						if (touch_check)
-							_received_msgs.push(clientReply(Message(ERR_UNKNOWNCOMMAND, firstcommand.substr(0,splitted[i].find(' ')) + " :"),*this));
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_UNKNOWNCOMMAND, firstcommand.substr(0,splitted[i].find(' ')) + " :"),*this));
 					}
 					catch (Parse::ThoManyArgs)
 					{	
 						if (touch_check)
-							_received_msgs.push(clientReply(Message(ERR_NEEDMOREPARAMS,firstcommand.substr(0,splitted[i].find(' ')) + " :Two many arguments"),*this));
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_NEEDMOREPARAMS,firstcommand.substr(0,splitted[i].find(' ')) + " :Two many arguments"),*this));
 					}
 					catch (Command::WrongArgumentsNumber)
 					{	
 						if (touch_check)
-							_received_msgs.push(clientReply(Message(ERR_NEEDMOREPARAMS, firstcommand.substr(0,splitted[i].find(' ')) + " :Need more arguments"),*this));
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_NEEDMOREPARAMS, firstcommand.substr(0,splitted[i].find(' ')) + " :Need more arguments"),*this));
 					}
 					catch (Command::WrongChannelName)
 					{	
 						if (touch_check)
-							_received_msgs.push(clientReply(Message(ERR_NOSUCHCHANNEL, firstcommand.substr(0,splitted[i].find(' ')) + " " + ERR_NOSUCHCHANNEL_MESS),*this));
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_INVALIDCHANNELNAME, firstcommand.substr(0,splitted[i].find(' ')) + ":"/* +  ERR_NOSUCHCHANNEL_MESS */),*this));
 					}
+					catch (Command::ErrNickname)
+					{	
+						if (touch_check)
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_ERRONEUSNICKNAME, /* firstcommand.substr(0,splitted[i].find(' ')) + */ ":"/* +  ERR_ERRONEUSNICKNAME_MESS */),*this));
+					}
+					
 				}
 			}
         // }
@@ -114,6 +131,7 @@ Client::~Client() {
 }
 
 Client::Client(int fd) : _nickname(), _raw_data(), _raw_send(), _fd(fd), pass_check(0),nick_check(0),user_check(0),reg_check(0),touch_check(0) {
+
 }
 
 Client::Client(int fd, std::string host): _hostname(host), _nickname(), _raw_data(), _raw_send(), _fd(fd), pass_check(0),nick_check(0),user_check(0),reg_check(0),touch_check(0) 
@@ -231,9 +249,9 @@ std::string notification(const Client & client, const Command * command)
 		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_hostname() + " " + command->fullCommand() + "\r\n");
 	}
 	
-std::string clientReply(const Message & message, const Client & client) 
+std::string clientReply(const std::string & hostIp, const Message & message, const Client & client) 
 	{
 	//	:irc.example.net "254" misha 1 :channels formed
 
-		return (":" + client.get_hostname() + " " + message.code() + " " + client.get_nickname() + " " + message.message() + "\r\n");
+		return (":" + hostIp + " " + message.code() + " " + client.get_nickname() + " " + message.message() + "\r\n");
 	}

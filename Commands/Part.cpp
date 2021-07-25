@@ -37,7 +37,7 @@ bool Part::execute(Server & server, Client & client)
 			throw WrongChannelName();
 		else if (server._channels[_channels[i]].users.count(client.get_nickname()) == 0)
 			throw WrongChannelName();
-		for (std::map<std::string, std::pair<Client *, std::set<char> > >::iterator it = server._channels[_channels[i]].users.begin(); it != server._channels[_channels[i]].users.end(); it++)
+		for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it = server._channels[_channels[i]].users.begin(); it != server._channels[_channels[i]].users.end(); it++)
 		{
 			server._users[(*it).first]->_received_msgs.push(notification("PART " + _channels[i] + " :" + _message ,client));
 		}

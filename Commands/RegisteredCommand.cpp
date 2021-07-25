@@ -18,7 +18,7 @@ RegisteredCommand& RegisteredCommand::operator=(const RegisteredCommand &)
 bool RegisteredCommand::execute(Server & server, Client & client) {
 	client.touch_check = true;
 	if (!client.reg_check)
-		client._received_msgs.push(clientReply(Message(ERR_NOTREGISTERED, ":"),client));
+		client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOTREGISTERED, ":"),client));
 	return !client.reg_check;
 }
 

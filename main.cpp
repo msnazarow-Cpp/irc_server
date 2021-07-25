@@ -1,3 +1,5 @@
+#include "Channel.h"
+#include <iostream>
 class A{
 
 };
@@ -19,8 +21,10 @@ class D{
 void kek(C c){}
 int main(int argc, char const *argv[])
 {
-	A a;
-	D d(a);
+	std::vector<Channel::BanMask> _ban_list;
+
+	_ban_list.push_back((Channel::BanMask){"mask[0]","mask[1]","mask[2]","client.get_nickname()",time(NULL)});
+	std::cout << _ban_list[0].time;
 	return 0;
 }
 
