@@ -7,6 +7,8 @@
 #include <Parse.hpp>
 #include "Command.hpp"
 #include <stdint.h>
+#include "Parse.hpp"
+
 #define BUFFER_SIZE 10000
 
 Parse Client::parse;
@@ -78,27 +80,27 @@ bool Client::receive(bool fd_is_set, Server &server) {
 						comm = SharedPtr<Command>(parse.make_command(splitted[i], this));
                  		_received_commands.push(comm);
 					}
-					catch (Parse::UknownCommand)
+					catch (const Parse::UknownCommand&)
 					{	
 						if (touch_check)
 							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_UNKNOWNCOMMAND, firstcommand.substr(0,splitted[i].find(' ')) + " :"),*this));
 					}
-					catch (Parse::ThoManyArgs)
+					catch (const Parse::ThoManyArgs&)
 					{	
 						if (touch_check)
 							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_NEEDMOREPARAMS,firstcommand.substr(0,splitted[i].find(' ')) + " :Two many arguments"),*this));
 					}
-					catch (Command::WrongArgumentsNumber)
+					catch (const Command::WrongArgumentsNumber&)
 					{	
 						if (touch_check)
 							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_NEEDMOREPARAMS, firstcommand.substr(0,splitted[i].find(' ')) + " :Need more arguments"),*this));
 					}
-					catch (Command::WrongChannelName)
+					catch (const Command::WrongChannelName&)
 					{	
 						if (touch_check)
 							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHCHANNEL, firstcommand.substr(0,splitted[i].find(' ')) + ":"/* +  ERR_NOSUCHCHANNEL_MESS */),*this));
 					}
-					catch (Command::ErrNickname)
+					catch (const Command::ErrNickname&)
 					{	
 						if (touch_check)
 							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_ERRONEUSNICKNAME, /* firstcommand.substr(0,splitted[i].find(' ')) + */ ":"/* +  ERR_ERRONEUSNICKNAME_MESS */),*this));
