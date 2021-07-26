@@ -21,7 +21,7 @@ Whois *Whois::create(const std::string & full_command, const std::vector<std::st
 
 std::string Whois::person(Client & client)
 {
-	return (client.get_nickname() + " ~" + client.get_username() + " " + client.get_hostname() + "* :" + client.get_realname());
+	return (client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + "* :" + client.get_realname());
 }
 std::string Whois::channels(Client & client)
 {

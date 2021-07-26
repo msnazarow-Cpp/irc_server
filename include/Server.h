@@ -23,7 +23,7 @@ private:
 	//std::vector<ServConfig> _servers;
 
 	//std::list<SharedPtr<Client> > _new_users;
-	std::vector<Clients_map::iterator> _to_delete;
+	std::set<std::string> _to_delete;
 	std::vector<std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator> _to_delete_from_channels;
     Clients_map _users;
     std::map<std::string, Channel> _channels;

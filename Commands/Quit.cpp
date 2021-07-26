@@ -30,7 +30,7 @@ bool Quit::execute(Server & server, Client & client)
 			releted_users.insert(server._users[(*it).first]);
 	for (std::set<SharedPtr<Client> >::iterator it = releted_users.begin(); it != releted_users.end(); it++)
 		(*it)->_received_msgs.push(notification(client, this));
-	server._to_delete.push_back(server._users.find(client.get_nickname()));
+	server._to_delete.insert(client.get_nickname());
 	for (std::map<std::string, Channel>::iterator it = server._channels.begin() ; it != server._channels.end(); it++)
 		(*it).second.users.erase(client.get_nickname());
 	//close(client.getFd()); // ТаК??

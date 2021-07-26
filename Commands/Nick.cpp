@@ -56,7 +56,7 @@ bool Nick::execute(Server & server, Client & client)
 				(*it)->_received_msgs.push(notification(client, this));
 		}
 		server._users[_newnick] = server._users[client.get_nickname()];
-		server._to_delete.push_back(server._users.find(client.get_nickname()));
+		server._to_delete.insert(client.get_nickname());
 		client.set_nickname(_newnick);
 		if (!client.reg_check && client.nick_check && client.user_check)
 		{

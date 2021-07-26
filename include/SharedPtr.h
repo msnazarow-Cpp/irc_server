@@ -15,21 +15,21 @@ class SharedPtr {
 			(*counter)--;
 	}
 
-	SharedPtr(const SharedPtr &sh_ptr) : counter(0), ptr_(0) {
-		*this = sh_ptr;
+	SharedPtr(const SharedPtr &shptr_) : counter(0), ptr_(0) {
+		*this = shptr_;
 	}
 
-	SharedPtr &operator=(const SharedPtr &sh_ptr) {
-		if (this == &sh_ptr)
+	SharedPtr &operator=(const SharedPtr &shptr_) {
+		if (this == &shptr_)
 			return *this;
 		if (counter)
 			if (--(*counter) == 0) {
 				delete ptr_;
 				delete counter;
 			}
-		*(sh_ptr.counter) += 1;
-		counter = sh_ptr.counter;
-		ptr_ = sh_ptr.ptr_;
+		*(shptr_.counter) += 1;
+		counter = shptr_.counter;
+		ptr_ = shptr_.ptr_;
 		return *this;
 	}
 
@@ -57,7 +57,13 @@ class SharedPtr {
 	T *operator->() const {
 		return ptr_;
 	}
-
+	bool operator==(const SharedPtr & it) const { return (ptr_ == it.ptr_);}
+	bool operator!=(const SharedPtr & it) const { return (ptr_ != it.ptr_);}
+	bool operator>=(const SharedPtr & it) const { return (ptr_ >= it.ptr_);}
+	bool operator<=(const SharedPtr & it) const { return (ptr_ <= it.ptr_);}
+	bool operator>(const SharedPtr & it) const { return (ptr_ > it.ptr_);}
+	bool operator<(const SharedPtr & it) const { return (ptr_ < it.ptr_);}
+	
  private:
 	int *counter;
 	T *ptr_;
@@ -70,24 +76,10 @@ template <typename T>
 	{
 		return (lhs.base() == rhs.base());
 	}
-	template<typename T_L, typename T_R>
-	bool
-	operator==(const SharedPtr<T_L> lhs,
-			const SharedPtr<T_R> rhs)
-	{
-		return (lhs.base() == rhs.base());
-	}
 	template <typename T>
 	bool
 	operator!=(const SharedPtr<T> lhs,
 			const SharedPtr<T> rhs)
-	{
-		return (lhs.base() != rhs.base());
-	}
-	template<typename T_L, typename T_R>
-	bool
-	operator!=(const SharedPtr<T_L> lhs,
-			const SharedPtr<T_R> rhs)
 	{
 		return (lhs.base() != rhs.base());
 	}
@@ -98,13 +90,13 @@ template <typename T>
 	{
 		return (lhs.base() < rhs.base());
 	}
-	template<typename T_L, typename T_R>
-	bool
-	operator<(const SharedPtr<T_L> lhs,
-			const SharedPtr<T_R> rhs)
-	{
-		return (lhs.base() < rhs.base());
-	}
+	// template<typename T_L, typename T_R>
+	// bool
+	// operator<(const SharedPtr<T_L> lhs,
+	// 		const SharedPtr<T_R> rhs)
+	// {
+	// 	return (lhs.base() < rhs.base());
+	// }
 	template <typename T>
 	bool
 	operator>(const SharedPtr<T> lhs,
@@ -112,14 +104,14 @@ template <typename T>
 	{
 		return (lhs.base() > rhs.base());
 	}
-	template<typename T_L,
-			typename T_R>
-	bool
-	operator>(const SharedPtr<T_L> lhs,
-			const SharedPtr<T_R> rhs)
-	{
-		return (lhs.base() > rhs.base());
-	}
+	// template<typename T_L,
+	// 		typename T_R>
+	// bool
+	// operator>(const SharedPtr<T_L> lhs,
+	// 		const SharedPtr<T_R> rhs)
+	// {
+	// 	return (lhs.base() > rhs.base());
+	// }
 	template <typename T>
 	bool
 	operator<=(const SharedPtr<T> lhs,
@@ -127,13 +119,13 @@ template <typename T>
 	{
 		return (lhs.base() <= rhs.base());
 	}
-	template<typename T_L, typename T_R>
-	bool
-	operator<=(const SharedPtr<T_L> lhs,
-			const SharedPtr<T_R> rhs)
-	{
-		return (lhs.base() <= rhs.base());
-	}
+	// template<typename T_L, typename T_R>
+	// bool
+	// operator<=(const SharedPtr<T_L> lhs,
+	// 		const SharedPtr<T_R> rhs)
+	// {
+	// 	return (lhs.base() <= rhs.base());
+	// }
 	template <typename T>
 	bool
 	operator>=(const SharedPtr<T> lhs,
@@ -141,11 +133,11 @@ template <typename T>
 	{
 		return (lhs.base() >= rhs.base());
 	}
-	template<typename T_L,
-			typename T_R>
-	bool
-	operator>=(const SharedPtr<T_L> lhs,
-			const SharedPtr<T_R> rhs)
-	{
-		return (lhs.base() >= rhs.base());
-	}
+	// template<typename T_L,
+	// 		typename T_R>
+	// bool
+	// operator>=(const SharedPtr<T_L> lhs,
+	// 		const SharedPtr<T_R> rhs)
+	// {
+	// 	return (lhs.base() >= rhs.base());
+	// }

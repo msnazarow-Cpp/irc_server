@@ -156,17 +156,21 @@ void Server::checkClients() {
         if (FD_ISSET((*it_a).second->getFd(), &_writeFds))
             (*it_a).second->response();
     }
-	size_t i = 0;
-	while (i < _to_delete.size())
-	{
-		if ((*_to_delete[i]).second->_received_msgs.empty())
-		{	
-			_users.erase(_to_delete[i]);
-			_to_delete.erase(_to_delete.begin() + i); // Tut sega
+	// size_t i = 0;
+	// while (i < _to_delete.size())
+	// {
+		for (std::set<std::string>::iterator it = _to_delete.begin(); it != _to_delete.end();)
+		{
+			std::set<std::string>::iterator next = ++it;
+			it--;
+			if (_users[*it]->_received_msgs.empty())
+			{	
+				_users.erase(*it);
+				_to_delete.erase(it); // Tut sega bila? 
+			}
+			it = next;
 		}
-		else
-		i++;
-	}
+	// }
 	// i = 0;
 	// while (_to_delete_from_channels.size())
 	// {

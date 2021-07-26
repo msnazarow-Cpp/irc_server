@@ -39,7 +39,7 @@ bool Kill::execute(Server & server, Client & client)
 		for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it = server._channels[(*it_ch).first].users.begin(); it != server._channels[(*it_ch).first].users.end(); it++)
 			releted_users.insert(server._users[(*it).first]);
 	server._users[_arguments[0]]->_received_msgs.push("ERROR :KILLed by " + client.get_nickname() + ": " +_arguments[1] + "\r\n");
-	server._to_delete.push_back(server._users.find(_arguments[0]));
+	server._to_delete.insert(_arguments[0]);
 	_full_command = "QUIT :KILLed by " + client.get_nickname() + ": " +_arguments[1];
 	
 	for (std::set<SharedPtr<Client> >::iterator it = releted_users.begin(); it != releted_users.end(); it++)

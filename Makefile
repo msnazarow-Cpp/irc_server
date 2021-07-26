@@ -52,7 +52,7 @@ SRC_B		=	main.cpp\
 COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) #-fsanitize=address 
+CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address 
 INCLUDES = -ICommands -I. -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))

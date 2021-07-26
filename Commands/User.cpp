@@ -53,7 +53,7 @@ bool User::execute(Server & server, Client & client)
 			{
 				client._received_msgs.push("ERROR :Access denied: Bad password?\r\n");
 				//close(client.getFd()); // ТаК??
-				server._to_delete.push_back(server._users.find(client.get_nickname()));
+				server._to_delete.insert(client.get_nickname());
 			}
 	}
 	return false;

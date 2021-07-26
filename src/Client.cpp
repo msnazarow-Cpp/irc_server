@@ -30,7 +30,7 @@ bool Client::receive(bool fd_is_set, Server &server) {
 	//strart dich
 	if (read_ret == 0)
 	{
-		server._to_delete.push_back(server._users.find(_nickname));
+		server._to_delete.insert(_nickname);
 		return true;
 	}
 	else if (read_ret == SIZE_MAX)

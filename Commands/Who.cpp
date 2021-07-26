@@ -34,15 +34,16 @@ Who *Who::create(const std::string & full_command, const std::vector<std::string
 	return new Who(full_command, arguments);
 }
 
+//remove ~
 std::string Who::response(std::string channelName, Server & server, Client & client)
 {
-	return (channelName + " " + "~" + client.get_username() + " " + client.get_hostname() + " " + server.hostIp() + " " + 
+	return (channelName + " " + client.get_username() + " " + client.get_hostname() + " " + server.hostIp() + " " + 
 	client.get_nickname() + " H" + (channelName != "*" && client._channels[channelName]->users[client.get_nickname()].second.count('o') ? "@" : "") 
 	+ (client._priveleges.count('O') ? "*" : "") + " :0 " + client.get_realname());
 }
 std::string Who::response(Server & server, Client & client)
 {
-	return ("* ~" + client.get_username() + " " + client.get_hostname() + " " + server.hostIp() + " " + client.get_nickname() + " H :0 " + client.get_realname());
+	return ("* " + client.get_username() + " " + client.get_hostname() + " " + server.hostIp() + " " + client.get_nickname() + " H :0 " + client.get_realname());
 }
 bool Who::execute(Server & server, Client & client)
 {
