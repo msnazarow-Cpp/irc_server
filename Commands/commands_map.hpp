@@ -15,6 +15,10 @@
 #include "List.hpp"
 #include "Who.hpp"
 #include "Notice.hpp"
+#include "Whois.hpp"
+#include "Ison.hpp"
+#include "Topic.hpp"
+#include "Names.hpp"
 template <typename T, typename U>
 class create_map
 {

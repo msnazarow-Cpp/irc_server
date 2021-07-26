@@ -2,7 +2,7 @@
 
 #include "RegisteredCommand.hpp"
 
-class Quit : public RegisteredCommand
+class Quit : public Command
 {
 public:
     Quit();

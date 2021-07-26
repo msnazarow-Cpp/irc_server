@@ -45,6 +45,8 @@ bool User::execute(Server & server, Client & client)
 		if (client.pass_check)
 			{
 				client._received_msgs.push(clientReply(server.hostIp(), Message("001", ":Welcome abroad!"),client));
+				client._received_msgs.push(clientReply(server.hostIp(), Message("376", ":Welcome abroad!"),client));
+				
 				client.reg_check = true;
 			}
 		else

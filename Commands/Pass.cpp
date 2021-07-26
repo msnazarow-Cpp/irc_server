@@ -23,12 +23,14 @@ Pass *Pass::create(const std::string & full_command, const std::vector<std::stri
 bool Pass::execute(Server & server, Client & client)
 {
 	client.touch_check = true;
-	if (client.pass_check)
+	if (server.getPassword() != _password)
+		client.pass_check = false;
+	else if (client.pass_check)
 		{
 			client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_ALREADYREGISTRED, ":"), client)); 
 			return false;
 		}
-	if (server.getPassword() == _password)
+	else
 		client.pass_check = true;
 	if (client.nick_check && client.user_check){
 	if (client.pass_check)

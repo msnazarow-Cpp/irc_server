@@ -42,7 +42,7 @@ bool Client::receive(bool fd_is_set, Server &server) {
 	_raw_data += buffer;
 	if (_raw_data.empty())
 		return false;
-	std::cout << "DEBUG : \n" << buffer << std::endl;
+	std::cout << "INPUT : \n" << buffer << std::endl;
     bool save_last = _raw_data[_raw_data.size() - 1] != '\n';
     std::vector<std::string> splitted = ft::split(_raw_data, '\n');
 	for (size_t i = 0; i < splitted.size(); i++)
@@ -96,12 +96,16 @@ bool Client::receive(bool fd_is_set, Server &server) {
 					catch (Command::WrongChannelName)
 					{	
 						if (touch_check)
-							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_INVALIDCHANNELNAME, firstcommand.substr(0,splitted[i].find(' ')) + ":"/* +  ERR_NOSUCHCHANNEL_MESS */),*this));
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHCHANNEL, firstcommand.substr(0,splitted[i].find(' ')) + ":"/* +  ERR_NOSUCHCHANNEL_MESS */),*this));
 					}
 					catch (Command::ErrNickname)
 					{	
 						if (touch_check)
 							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_ERRONEUSNICKNAME, /* firstcommand.substr(0,splitted[i].find(' ')) + */ ":"/* +  ERR_ERRONEUSNICKNAME_MESS */),*this));
+					}
+					catch (Command::NothingToDo)
+					{
+
 					}
 					
 				}
@@ -145,6 +149,7 @@ void Client::raw_send() {
     if (!_raw_send.empty()) {
         ssize_t chunk_size = std::min(_raw_send.size(), MAX_CHUNK_SIZE);
         ssize_t sended = write(_fd, _raw_send.c_str(), chunk_size);
+		std::cout << "OUTPUT:\n" << _raw_send << std::endl;
         //TODO: if (ret <= 0) {
         //TODO:     _status = CLOSE_CONNECTION;
         _raw_send.erase(0, sended);
@@ -238,15 +243,15 @@ Client::Client(): _fd(-1)
 {
 	
 }
-
+//removed !~ ~
 std::string notification(const Message & message, const Client & client)
     {
-		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_hostname() + " " + message.message() + "\r\n");
+		return (":" + client.get_nickname() + "!" + client.get_username() + "@" + client.get_hostname() + " " + message.message() + "\r\n");
 	}
 
 std::string notification(const Client & client, const Command * command)
     {
-		return (":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_hostname() + " " + command->fullCommand() + "\r\n");
+		return (":" + client.get_nickname() + "!" + client.get_username() + "@" + client.get_hostname() + " " + command->fullCommand() + "\r\n");
 	}
 	
 std::string clientReply(const std::string & hostIp, const Message & message, const Client & client) 

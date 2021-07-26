@@ -9,6 +9,10 @@ SRC_M		=	main.cpp\
 				Message.cpp
 
 COMM =		Commands/Command.o\
+			Commands/Names.o\
+			Commands/Ison.o\
+			Commands/Topic.o\
+			Commands/Whois.o\
 			Commands/Notice.o\
 			Commands/List.o\
 			Commands/Who.o\

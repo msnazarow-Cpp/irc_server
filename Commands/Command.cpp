@@ -18,8 +18,3 @@ Command::~Command()
 {
 
 }
-
-char const* Command::WrongArgumentsNumber::what() const throw()
-{
-	return ("Wrong number of arguments");
-}

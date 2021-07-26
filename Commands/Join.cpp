@@ -49,7 +49,7 @@ bool Join::execute(Server & server, Client & client)
 	{
 		if (_channels[i][0] != '#')
 			{
-				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_INVALIDCHANNELNAME, _recipients[i] + " :"/* +  ERR_NOSUCHCHANNEL_MESS */),client));
+				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHCHANNEL, _recipients[i] + " :"/* +  ERR_NOSUCHCHANNEL_MESS */),client));
 				continue ;
 			}	
 		if(server._channels.count(_channels[i]) == 0)
@@ -85,6 +85,10 @@ bool Join::execute(Server & server, Client & client)
 		}
 		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_NAMREPLY, "= " + _channels[i] + " :" + _message), client));
 		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFNAMES, _channels[i] + " " RPL_ENDOFNAMES_MESS),client));
+		if (server._channels[_channels[i]].topic.empty())
+			client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_NOTOPIC, _channels[i] + " " +  RPL_NOTOPIC_MESS),client));
+		else
+			client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_TOPIC, _channels[i] + " :" +  server._channels[_channels[i]].topic),client));
 		//:irc.server.net 353 Phyre = #SomeChannel :@WiZ
 	}
 	
