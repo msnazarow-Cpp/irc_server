@@ -10,6 +10,7 @@ SRC_M		=	main.cpp\
 BOT_FILES =		bot/main.o
 BOT 		= BOT.bot
 COMM =		Commands/Command.o\
+			Commands/Userhost.o\
 			Commands/Names.o\
 			Commands/Ison.o\
 			Commands/Topic.o\

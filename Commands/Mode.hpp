@@ -8,7 +8,7 @@ public:
     Mode();
 	Mode(const std::string & full_command, const std::vector<std::string> & arguments);
     Mode(const Mode &);
-	bool banCase(Server & server, Client & client);
+	bool banCase(Server & server, Client & client,const std::string & ban_string);
     Mode &operator=(const Mode &);
     ~Mode();
 	std::vector<std::string> banparse(const std::string &ban);

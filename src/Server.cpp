@@ -115,6 +115,11 @@ void Server::reloadFdSets() {
     }
 }
 
+bool isEmptyChannel(std::pair <std::string, Channel *> elem)
+{
+	return (elem.second->users.empty());
+}
+
 void Server::checkClients() {
 
     typedef std::map<std::string, SharedPtr<Client> >::iterator map_iter;
@@ -170,6 +175,14 @@ void Server::checkClients() {
 			}
 			it = next;
 		}
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end();)
+	{
+		std::map<std::string, Channel>::iterator next = ++it;
+		it--;
+		if ((*it).second.users.empty())
+			_channels.erase(it);
+		it = next;
+	}
 	// }
 	// i = 0;
 	// while (_to_delete_from_channels.size())

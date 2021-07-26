@@ -64,11 +64,12 @@ bool Client::receive(bool fd_is_set, Server &server) {
 			if (!splitted[i].empty())
 			{
 				if(splitted[i].substr(0, 6) == "CAP LS")
-					_received_msgs.push(":" + hostIp() +  " CAP * LS :multi-prefix\r\n");
+					_received_msgs.push(":" + server.hostIp() +  " CAP * LS :\r\n");
+					// _received_msgs.push(":" + server.hostIp() +  " CAP * LS :multi-prefix\r\n");
 				else if (splitted[i].substr(0,4) == "PING" || splitted[i].substr(0,4) == "PONG")
-					_received_msgs.push(":" + hostIp() + " PONG " + hostIp() + " :" + _nickname + "\r\n");
+					_received_msgs.push(":" + server.hostIp() + " PONG " + server.hostIp() + " :" + _nickname + "\r\n");
 				else if (splitted[i].substr(0,21)  == "CAP REQ :multi-prefix")
-					_received_msgs.push(":" + hostIp() +  " CAP * ACK multi-prefix\r\n");
+					_received_msgs.push(":" + server.hostIp() +  " CAP * NAK multi-prefix\r\n");
 				else if(splitted[i].substr(0,7) == "CAP END")
 					;
 				else

@@ -9,7 +9,7 @@ Parse::Parse()
 	("KILL", new Kill())("MODE", new Mode())("NICK", new Nick())("OPER", new Oper())
 	("PART", new Part())("PRIVMSG", new Privmsg())("QUIT", new Quit())("USER", new User())
 	("LIST", new List())("WHO", new Who())("NOTICE", new Notice())("ISON", new Ison())
-	("WHOIS", new Whois())("TOPIC", new Topic())("NAMES", new Names());
+	("WHOIS", new Whois())("TOPIC", new Topic())("NAMES", new Names())("USERHOST", new Userhost());
 }
 // Pass * Parse::pass;
 // Kick * Parse::kick;

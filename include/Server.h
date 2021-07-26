@@ -60,6 +60,7 @@ private:
 	friend class Whois;
 	friend class Topic;
 	friend class Names;
+	friend class Userhost;
 	Server(int port, const std::string& host_ip);
 	Server(int port, const std::string &host_ip, std::string password);
 

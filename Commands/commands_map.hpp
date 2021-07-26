@@ -19,6 +19,7 @@
 #include "Ison.hpp"
 #include "Topic.hpp"
 #include "Names.hpp"
+#include "Userhost.hpp"
 template <typename T, typename U>
 class create_map
 {
