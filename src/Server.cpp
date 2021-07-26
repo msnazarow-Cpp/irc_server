@@ -79,7 +79,7 @@ void Server::newClient() {
 		new_client->pass_check = true;
     //TODO:: costil
 	new_client->set_hostname(inet_ntoa(clientAddr.sin_addr));
-    std::string name = "__unregistered__" + SSTR(_number_of_uneregistered_clients++);
+    std::string name = "__unregistered__" + ft::to_string(_number_of_uneregistered_clients++);
     new_client->set_nickname(name);
     std::cerr << "New user: " << name << std::endl;
     _users[name] = new_client;

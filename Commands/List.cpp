@@ -25,7 +25,7 @@ bool List::execute(Server & server, Client & client)
 		return(true);;
 	client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_LISTSTART, RPL_LISTSTART_MESS),client));
 	for (std::map<std::string, Channel>::iterator it = server._channels.begin(); it != server._channels.end(); it++)
-		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_LIST, (*it).first + " " + SSTR((*it).second.users.size()) + " :" + (*it).second.getTopic()),client));
+		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_LIST, (*it).first + " " + ft::to_string((*it).second.users.size()) + " :" + (*it).second.getTopic()),client));
 	client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_LISTEND, RPL_LISTEND_MESS),client));
 	std::cout << "List works!" << std::endl;
 	return true;

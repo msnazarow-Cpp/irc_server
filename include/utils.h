@@ -25,8 +25,11 @@ namespace ft {
     template <typename T>
     std::string to_string(T x)
     {
-        return (static_cast< std::ostringstream & >( \
-            ( std::ostringstream() << std::dec << x ) ).str());
+    	std::ostringstream ostr;
+    	ostr << x;
+		return ostr.str();
+       // return (static_cast< std::ostringstream & >( \
+       //     ( std::ostringstream() << std::dec << x ) ).str());
     }
     template<typename T>
     std::string to_str(T n) {

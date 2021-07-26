@@ -52,7 +52,7 @@ bool Mode::banCase(Server & server, Client & client,const std::string & ban_stri
 	if (_arguments.size() == 2)
 	{
 		for (size_t i = 0; i < _ban_list.size(); i++)
-			banlist.push_back(_ban_list[i].nick + "!" + _ban_list[i].user + "@" + _ban_list[i].host + " " + _ban_list[i].operator_name + " " + SSTR(_ban_list[i].time));
+			banlist.push_back(_ban_list[i].nick + "!" + _ban_list[i].user + "@" + _ban_list[i].host + " " + _ban_list[i].operator_name + " " + ft::to_string(_ban_list[i].time));
 		for (size_t i = 0; i < banlist.size(); i++)
 			client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_BANLIST, _recipients[0] + " " + banlist[i]),client));
 		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFBANLIST, _recipients[0] + " " + RPL_ENDOFBANLIST_MESS),client));
@@ -129,7 +129,7 @@ bool Mode::execute(Server & server, Client & client)
 		if (_arguments.size() == 1)
 		{
 				client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_CHANNELMODEIS, _recipients[0] + " +" + setToStr(server._channels[_recipients[0]].priveleges)),client));
-				client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_CREATIONTIME, _recipients[0] + " " + SSTR(server._channels[_recipients[0]].creation_time)),client));
+				client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_CREATIONTIME, _recipients[0] + " " + ft::to_string(server._channels[_recipients[0]].creation_time)),client));
 		}
 		else if (client._channels.count(_recipients[0]) && client._channels[_recipients[0]])
 		{
