@@ -6,9 +6,13 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <cstdlib>
 #include "utils.h"
 
 std::string connect_msg(const std::string& bot_name, const std::string& password){
+	if (password.empty())
+		return "NICK " + bot_name + "\r\nUSER " + bot_name + " * * *\r\n";
+	
 	return "PASS " + password + "\r\n" + "NICK " + bot_name + "\r\nUSER " + bot_name + " * * *\r\n";
 }
 
@@ -16,6 +20,8 @@ char buff[1024];
 
 void exit(int i);
 //execute ./irc_echo_bot port ip bot_name password
+
+//:localhost 474 sgerturd|2 :Cannot join channel (+b)
 int main(int argc, char** argv)
 {
 	int sock;
@@ -51,14 +57,14 @@ int main(int argc, char** argv)
 	{
 		int rec = recv(sock, buff, 1024, 0);
 		buff[rec] = 0;
-		printf(buff);
+		std::cout << buff << std::endl;
 		std::string raw = buff;
 		if(raw.find("PRIVMSG") == std::string::npos)
 			continue;
 		std::vector<std::string> splitted = ft::split(buff, ':');
 		std::cerr <<"s_size:" << splitted.size() <<std::endl;
 		std::string msg = "PRIVMSG " + ft::split(splitted[0], '!')[0] + " :U sad:" + splitted[1];
-		int sended = send(sock, msg.c_str(), msg.size(), 0);
+		send(sock, msg.c_str(), msg.size(), 0);
 		for(auto it:splitted)
 			std::cerr << it << std::endl;
 		std::cerr << std::endl;

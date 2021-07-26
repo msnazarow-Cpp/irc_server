@@ -1,10 +1,11 @@
 #include <iostream>
 #include "Server.h"
-
+#include <signal.h>
 volatile bool loop = true;
 
 int main(int ac, char **av)
 {
+	signal(SIGPIPE, SIG_IGN);
 	if (ac != 3) {
 		std::cerr << "\033[1;31mTwo argument only!\033[0m" << std::endl;
 		return 1;
@@ -25,6 +26,7 @@ int main(int ac, char **av)
 			server.checkClients();
 		}
 	} catch (std::exception &e) {
+		std::cout << "THis is noT normal" <<std::endl;
 		std::cerr << e.what() << std::endl;
 	}
 	return (0);

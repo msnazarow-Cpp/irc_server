@@ -107,7 +107,7 @@ bool Client::receive(bool fd_is_set, Server &server) {
 					}
 					catch (Command::NothingToDo)
 					{
-
+						std::cout << "This is ok" <<std::endl;
 					}
 					
 				}
@@ -147,15 +147,14 @@ Client::Client(int fd, std::string host): _hostname(host), _nickname(), _raw_dat
 
 
 void Client::raw_send() {
-    static const size_t MAX_CHUNK_SIZE = pow(2, 20);
-    if (!_raw_send.empty()) {
-        ssize_t chunk_size = std::min(_raw_send.size(), MAX_CHUNK_SIZE);
-        ssize_t sended = write(_fd, _raw_send.c_str(), chunk_size);
+    static const size_t MAX_CHUNK_SIZE = 1048576;
+    if (!_raw_send.empty()) 
+	{
+		ssize_t chunk_size = std::min(_raw_send.size(), MAX_CHUNK_SIZE);
+		ssize_t sended = write(_fd, _raw_send.c_str(), chunk_size);
 		std::cout << "OUTPUT:\n" << _raw_send << std::endl;
-        //TODO: if (ret <= 0) {
-        //TODO:     _status = CLOSE_CONNECTION;
-        _raw_send.erase(0, sended);
-    }
+		_raw_send.erase(0, sended);
+	}
 }
 
 bool Client::hasCommands() const{

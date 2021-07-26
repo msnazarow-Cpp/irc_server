@@ -34,9 +34,9 @@ std::vector<std::string> Mode::banparse(const std::string &ban)
 	if (pos1 != ban.npos)
 	{
 		size_t pos2 = ban.find('@');
-		out[1] = ban.substr(pos1 + 1, pos2 - pos1);
+		out[1] = ban.substr(pos1 + 1, pos2 - pos1 - 1);
 		if (pos2 != ban.npos)
-			out[2] = ban.substr(pos2 + 1, ban.size() - pos2);
+			out[2] = ban.substr(pos2 + 1, ban.size() - pos2 - 1);
 		else 
 			out[2] = "*";
 	}
@@ -95,7 +95,10 @@ std::vector<std::string> Mode::modesParse(std::string modes)
 	{
 		while (modes[i] == '+' || modes[i] == '-')
 			sign = modes[i++];
-		out.push_back((char[2]){sign,modes[i++]});
+		if (sign != 0)
+			out.push_back((char[3]){sign, modes[i], 0});
+		else
+			out.push_back((char[2]){modes[i], 0});
 	}
 	return (out);
 }

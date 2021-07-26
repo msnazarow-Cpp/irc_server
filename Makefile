@@ -7,7 +7,8 @@ SRC_M		=	main.cpp\
 				Client.cpp\
 				Channel.cpp\
 				Message.cpp
-
+BOT_FILES =		bot/main.o
+BOT 		= BOT.bot
 COMM =		Commands/Command.o\
 			Commands/Names.o\
 			Commands/Ison.o\
@@ -31,7 +32,6 @@ COMM =		Commands/Command.o\
 			Commands/RegisteredCommand.o\
 			Commands/OperatorsCommand.o\
 			Commands/Parse.o
-
 SRC_B		=	main.cpp\
 				ServConfig_bonus.cpp \
 				Server.cpp\
@@ -62,12 +62,12 @@ DEP			=	$(OBJ_M:%.o=%.d) \
 				$(COMM:.o=.d)
 .PHONY: all clean fclean re
 
-all: obj/Commands $(NAME)
+all: obj $(NAME) $(BOT)
 
 
-obj/Commands:
+obj:
 	mkdir -p obj/Commands
-
+	mkdir -p obj/bot
 $(BIN)/%.o:./src/%.cpp  | $(BIN)
 	$(CXX) -c $(CPPFLAGS) $< -o $@ 
 
@@ -76,7 +76,8 @@ obj/%.o : %.cpp
 
 $(NAME): $(OBJ_M) $(COMM)
 	$(CXX) $(CPPFLAGS) $^ -o $@
-
+$(BOT): $(BOT_FILES) src/utils.o
+	$(CXX) $(CPPFLAGS) $^ -o $@
 bonus: $(NAME_B)
 
 $(NAME_B): $(OBJ_B)
