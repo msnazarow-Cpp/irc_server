@@ -53,7 +53,7 @@ SRC_B		=	main.cpp\
 COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address 
+CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address
 INCLUDES = -ICommands -I. -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))
@@ -63,17 +63,17 @@ DEP			=	$(OBJ_M:%.o=%.d) \
 				$(COMM:.o=.d)
 .PHONY: all clean fclean re
 
-all: obj $(NAME) $(BOT)
+all: obj $(NAME) # $(BOT)
 
 
 obj:
 	mkdir -p obj/Commands
 	mkdir -p obj/bot
 $(BIN)/%.o:./src/%.cpp  | $(BIN)
-	$(CXX) -c $(CPPFLAGS) $< -o $@ 
+	$(CXX) -c $(CPPFLAGS) $< -o $@
 
 obj/%.o : %.cpp
-	$(CXX) -c $(CPPFLAGS) $< -o $@ 
+	$(CXX) -c $(CPPFLAGS) $< -o $@
 
 $(NAME): $(OBJ_M) $(COMM)
 	$(CXX) $(CPPFLAGS) $^ -o $@

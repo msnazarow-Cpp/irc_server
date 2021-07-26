@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(webserv)
 
 set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_FLAGS "-Wall -Werror -g -MMD -D_GLIBCXX_DEBUG -fsanitize=address")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -MMD -D_GLIBCXX_DEBUG -std=c++98 -fsanitize=address")
 include_directories(include
         Commands
         .)
