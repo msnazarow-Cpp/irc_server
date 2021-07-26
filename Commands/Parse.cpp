@@ -8,7 +8,8 @@ Parse::Parse()
 	("PASS", new Pass())("KICK", new Kick())("INVITE", new Invite())("JOIN", new Join())
 	("KILL", new Kill())("MODE", new Mode())("NICK", new Nick())("OPER", new Oper())
 	("PART", new Part())("PRIVMSG", new Privmsg())("QUIT", new Quit())("USER", new User())
-	("LIST", new List())("WHO", new Who())("NOTICE", new Notice());
+	("LIST", new List())("WHO", new Who())("NOTICE", new Notice())("ISON", new Ison())
+	("WHOIS", new Whois())("TOPIC", new Topic())("NAMES", new Names());
 }
 // Pass * Parse::pass;
 // Kick * Parse::kick;
@@ -45,10 +46,28 @@ Parse& Parse::operator=(const Parse &)
 	return (*this);
 }
 
+void removeSpaces(std::string& str)
+{
+	size_t n = 0;
+	while (isspace(str[n]))
+		n++;
+	str.erase(str.begin(), str.begin() + n);
+	for (std::string::iterator it = str.begin(); it != str.end(); it++)    
+	{
+		std::string::iterator begin = it;        
+		while (it != str.end() && ::isspace(*it) )
+			it++;
+		if (it - begin > 1)            
+			it = str.erase(begin + 1, it) - 1;
+	}
+}
+
 SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 {
 	if (_message.empty())
 		throw UknownCommand();
+
+	std::string _full_command;// = _message;
 	std::string _command_name;
 	std::string _last_argument;
 	std::stringstream _mysteam;
@@ -57,6 +76,7 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 	size_t pos = _message.find(':');
 	if (pos != _message.npos)
 		_last_argument = _message.substr(pos + 1, _message.size() - pos);
+	removeSpaces(_last_argument);
 	_message = _message.substr(0, pos);
 	_mysteam << _message;
 	while (_mysteam >> _arguments[i])
@@ -84,5 +104,7 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 	_arguments.erase(_arguments.begin());
 	if (pos != _message.npos)
 		_arguments.push_back(_last_argument);
-	return (SharedPtr<Command> (commands[_command_name]->create(_message, _arguments)) );
+	
+	_full_command = _message + " :" + _last_argument;
+	return (SharedPtr<Command> (commands[_command_name]->create(_full_command, _arguments)) );
 }

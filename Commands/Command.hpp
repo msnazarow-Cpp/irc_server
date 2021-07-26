@@ -49,59 +49,14 @@ public:
 	virtual Command *create(const std::string & full_command, const std::vector<std::string> & arguments) = 0;
 	virtual const std::string &getCommandMessage() { return _message;}
 	std::string &getCommandName();
-	class WrongArgumentsNumber : public std::exception
-	{
-	public:
-		virtual char const *what() const throw();
-	};
-		class WrongChannelName : public std::exception
-	{
-	public:
-		virtual char const *what() const throw()
-		{
-			return ("Wrong channel name");
-		}
-	};
-	class TryToRegistWithoutPass : public std::exception
-	{
-		public:
-			virtual char const *what() const throw()
-			{
-				return("You should enter server password before you can registrate");
-			}
-	};
-	class NoNickname : public std::exception
-	{
-		public:
-			virtual char const *what() const throw()
-			{
-				return("You should enter your nickname before you can set username");
-			}
-	};
-	class AlreadyRegistered : public std::exception
-	{
-		public:
-			virtual char const *what() const throw()
-			{
-				return("You have already regiseter");
-			}
-	};
-	class AleadyPassAuthentificationException : public std::exception
-    {
-        public:
-			virtual char const* what() const throw()
-            {
-                return("You already input right password. Use NICK and USER to pass registration");
-            }
-    };
-	class NotRegistered : public std::exception
-	{
-		public:
-			virtual char const* what() const throw()
-            {
-                return("You are not registered");
-            }
-	};
+	class NothingToDo : public std::exception {};
+	class WrongArgumentsNumber : public std::exception{};
+	class WrongChannelName : public std::exception{};
+	class TryToRegistWithoutPass : public std::exception{};
+	class NoNickname : public std::exception{};
+	class AlreadyRegistered : public std::exception	{};
+	class AleadyPassAuthentificationException : public std::exception {};
+	class NotRegistered : public std::exception{};
 	virtual ~Command();
 	class ErrNickname : public std::exception {};
 

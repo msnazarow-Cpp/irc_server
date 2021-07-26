@@ -14,6 +14,8 @@ public:
 
 	virtual Whois *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
+	std::string person(Client & client);
+	std::string channels(Client & client);
 	static std::string response(Server & server, Client & client);
     // virtual const std::string &getCommandName();
 private:

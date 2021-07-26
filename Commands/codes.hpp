@@ -179,6 +179,7 @@
 #define ERR_BADCHANNELKEY_MESS		":Cannot join channel (+k)"
 
 #define ERR_INVALIDCHANNELNAME		"476"
+#define ERR_INVALIDCHANNELNAME_MESS ":Invalid channel name"
 
 #define ERR_NOPRIVILEGES			"481"		// ":Permission Denied- You're not an IRC operator"
 										// - Any command requiring operator privileges to operate

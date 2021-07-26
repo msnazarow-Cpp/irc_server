@@ -24,6 +24,7 @@ private:
 
 	//std::list<SharedPtr<Client> > _new_users;
 	std::vector<Clients_map::iterator> _to_delete;
+	std::vector<std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator> _to_delete_from_channels;
     Clients_map _users;
     std::map<std::string, Channel> _channels;
     // TODO: std::map<std::string, Channel> _channels;
@@ -55,6 +56,10 @@ private:
 	friend class List;
 	friend class Notice;
 	friend class Client;
+	friend class Ison;
+	friend class Whois;
+	friend class Topic;
+	friend class Names;
 	Server(int port, const std::string& host_ip);
 	Server(int port, const std::string &host_ip, std::string password);
 

@@ -73,7 +73,10 @@ void Server::newClient() {
 							
     if (connection == -1)
         throw Error("connection");
-    SharedPtr<Client> new_client(new Client(connection, _host_ip));
+	 SharedPtr<Client> new_client(new Client(connection, _host_ip));
+	
+	if (_password.empty())
+		new_client->pass_check = true;
     //TODO:: costil
 	new_client->set_hostname(inet_ntoa(clientAddr.sin_addr));
     std::string name = "__unregistered__" + SSTR(_number_of_uneregistered_clients++);
@@ -159,11 +162,17 @@ void Server::checkClients() {
 		if ((*_to_delete[i]).second->_received_msgs.empty())
 		{	
 			_users.erase(_to_delete[i]);
-			_to_delete.erase(_to_delete.begin() + i);
+			_to_delete.erase(_to_delete.begin() + i); // Tut sega
 		}
 		else
 		i++;
 	}
+	// i = 0;
+	// while (_to_delete_from_channels.size())
+	// {
+	// 	_to_delete_from_channels.begin();
+	// 	_to_delete_from_channels.erase(_to_delete_from_channels.begin(); // Tut sega
+	// }
 }
 
 

@@ -32,16 +32,26 @@ Nick *Nick::create(const std::string & full_command, const std::vector<std::stri
 
 bool Nick::execute(Server & server, Client & client)
 {
+	// if (_newnick == client.get_nickname())
+	// 	client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NICKNAMEINUSE, ":Welcome abroad!"),client));
+
 	client.touch_check = true;
 	std::set<SharedPtr<Client> > releted_users;
+	releted_users.insert(server._users[client.get_nickname()]);
 	if (server.getClients().count(_newnick) == 0)
 	{
 		client.nick_check = true;
 		if (client.reg_check)
 		{
 			for (std::map<std::string, Channel *>::iterator it_ch = client._channels.begin(); it_ch != client._channels.end(); it_ch++)
-				for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it = server._channels[(*it_ch).first].users.begin(); it != server._channels[(*it_ch).first].users.end(); it++)
+			{
+				(*it_ch).second->users[_newnick] = (*it_ch).second->users[client.get_nickname()];
+				(*it_ch).second->users.erase(client.get_nickname());
+				// server._to_delete_from_channels.push_back((*it_ch).second->users.find(client.get_nickname()));
+				for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it = (*it_ch).second->users.begin(); it != (*it_ch).second->users.end(); it++)
+					if ((*it).first != _newnick)
 						releted_users.insert(server._users[(*it).first]);
+			}
 			for (std::set<SharedPtr<Client> >::iterator it = releted_users.begin(); it != releted_users.end(); it++)
 				(*it)->_received_msgs.push(notification(client, this));
 		}
@@ -53,6 +63,7 @@ bool Nick::execute(Server & server, Client & client)
 			if (client.pass_check)
 				{
 					client._received_msgs.push(clientReply(server.hostIp(), Message("001", ":Welcome abroad!"),client));
+					client._received_msgs.push(clientReply(server.hostIp(), Message("376", ":Welcome abroad!"),client));
 					client.reg_check = true;
 				}
 			else
