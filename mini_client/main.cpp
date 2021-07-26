@@ -109,16 +109,16 @@ int main(int ac, char **av) {
 	jokes.push_back("Голубей хлебом не корми, хлебом корми");
 	srand(time(0x0));
 	size_t oldIndex = -1, index = rand() % jokes.size();
+    signal(SIGPIPE, SIG_IGN);
 	volatile bool loop = true;
 	struct timeval tv, current;
 	gettimeofday(&current, 0x0);
 	std::set<std::string> channels;
-	while (loop) {
+    FD_SET(nClientSock, &forWrite);
+    while (loop) {
 		bzero(&forRead, sizeof(forRead));
-		bzero(&forRead, sizeof(forWrite));
 
 		FD_SET(nClientSock, &forRead);
-		FD_SET(nClientSock, &forWrite);
 		if (select(nClientSock + 1, &forRead, &forWrite, 0x0, 0x0) < 0) {
 			continue;
 		}
@@ -161,8 +161,9 @@ int main(int ac, char **av) {
 				}
 			}
 		}
+        bzero(&forWrite, sizeof(forWrite));
 
-	}
+    }
 
 
 	close(nClientSock);
