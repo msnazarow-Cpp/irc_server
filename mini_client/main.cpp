@@ -117,7 +117,6 @@ int main(int ac, char **av) {
     FD_SET(nClientSock, &forWrite);
     while (loop) {
 		bzero(&forRead, sizeof(forRead));
-
 		FD_SET(nClientSock, &forRead);
 		if (select(nClientSock + 1, &forRead, &forWrite, 0x0, 0x0) < 0) {
 			continue;
@@ -162,10 +161,7 @@ int main(int ac, char **av) {
 			}
 		}
         bzero(&forWrite, sizeof(forWrite));
-
     }
-
-
 	close(nClientSock);
 	return 0;
 }

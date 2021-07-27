@@ -146,7 +146,7 @@ void Server::checkClients() {
             {
 				ERR_NOSUCHCHANNEL;
 					client->_received_msgs.push(clientReply(this->hostIp(), Message(ERR_NOSUCHCHANNEL, comm->arguments()[0] + ":"), *client));
-				std::cout << client->_received_msgs.back() << std::endl;
+				//std::cout << client->_received_msgs.back() << std::endl;
             }
         }
     }

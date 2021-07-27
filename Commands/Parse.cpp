@@ -2,7 +2,7 @@
 #include "commands_map.hpp"
 #include "Client.h"
 
-Parse::Parse() 
+Parse::Parse()
 {
 	commands = create_map<std::string, Command*>
 	("PASS", new Pass())("KICK", new Kick())("INVITE", new Invite())("JOIN", new Join())
@@ -31,7 +31,7 @@ Parse::Parse()
 // 	("PASS", pass)("KICK", kick)("INVITE", invite)("JOIN", join)
 // 	("KILL", kill)("MODE", mode)("NICK", nick)("OPER", oper)
 // 	("PART", part)("PRIVMSG", privmsg)("QUIT", quit)("USER", user);
-Parse::~Parse() 
+Parse::~Parse()
 {
 	std::map<std::string, Command*>::iterator it = commands.begin();
 	while (it != commands.end())
@@ -41,25 +41,37 @@ Parse::~Parse()
 	}
 }
 
-Parse& Parse::operator=(const Parse &) 
+Parse& Parse::operator=(const Parse &)
 {
 	return (*this);
 }
 
-void removeSpaces(std::string& str)
+void removeDubSpaces(std::string& str)
 {
 	size_t n = 0;
 	while (isspace(str[n]))
 		n++;
 	str.erase(str.begin(), str.begin() + n);
-	for (std::string::iterator it = str.begin(); it != str.end(); it++)    
+	for (std::string::iterator it = str.begin(); it != str.end(); it++)
 	{
-		std::string::iterator begin = it;        
+		std::string::iterator begin = it;
 		while (it != str.end() && ::isspace(*it) )
 			it++;
-		if (it - begin > 1)            
+		if (it - begin > 1)
 			it = str.erase(begin + 1, it) - 1;
 	}
+}
+bool spaceCheck(char lhs, char rhs)
+{
+   return (lhs == rhs) && (lhs == ' ');
+}
+
+void removeMultipleSpaces(std::string& str)
+{
+    std::string::iterator new_end = std::unique(str.begin(), str.end(), spaceCheck);
+    str.erase(new_end, str.end());
+    if(str.size() && str[0] == ' ')
+        str.erase(str.begin());
 }
 
 SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
@@ -76,7 +88,7 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 	size_t pos = _message.find(':');
 	if (pos != _message.npos)
 		_last_argument = _message.substr(pos + 1, _message.size() - pos);
-	removeSpaces(_last_argument);
+    removeMultipleSpaces(_last_argument);
 	_message = _message.substr(0, pos);
 	_mysteam << _message;
 	while (_mysteam >> _arguments[i])
@@ -91,7 +103,7 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 			else
 				client->touch_check = true;
 		}
-		i++;	
+		i++;
 		if (i >= _arguments.size())
 			_arguments.resize(_arguments.size() * 2);
 		if (i > 5)
@@ -100,11 +112,13 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 	_arguments.resize(i);
 	if (_arguments.size() == 0)
 		throw Spaces();
-	
+
 	_arguments.erase(_arguments.begin());
 	if (pos != _message.npos)
 		_arguments.push_back(_last_argument);
-	
-	_full_command = _message + " :" + _last_argument;
+    if (!_last_argument.empty())
+	    _full_command = _message + " :" + _last_argument;
+    else
+        _full_command = _message;
 	return (SharedPtr<Command> (commands[_command_name]->create(_full_command, _arguments)) );
 }

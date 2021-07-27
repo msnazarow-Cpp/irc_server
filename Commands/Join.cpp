@@ -17,7 +17,7 @@ Join::Join(const std::string & full_command, const std::vector<std::string> & ar
 		throw Parse::ThoManyArgs();
 	if (arguments.size() == 0)
 		throw WrongArgumentsNumber();
-	if (arguments[0][0] != '#')
+	if (arguments[0][0] != '#' || arguments[0].find(' ') != arguments[0].npos)
 		throw WrongChannelName();
 	_channels = ft::split(arguments[0], ',');
 	if (arguments.size() == 2)

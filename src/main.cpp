@@ -12,7 +12,7 @@ int main(int ac, char **av)
 	}
 	std::cout << std::endl << "\033[1;31m" << "WELCOME TO MMM_IRC" << "\033[0m" << std::endl << std::endl;
 
-	try {
+//	try {
 		Server server(atoi(av[1]), "localhost", av[2]);
 		while (loop)
 		{
@@ -25,9 +25,9 @@ int main(int ac, char **av)
 			server.checkSockets();
 			server.checkClients();
 		}
-	} catch (std::exception &e) {
-		std::cout << "THis is noT normal" <<std::endl;
-		std::cerr << e.what() << std::endl;
-	}
+//	} catch (std::exception &e) {
+//		std::cout << "THis is noT normal" <<std::endl;
+//		std::cerr << e.what() << std::endl;
+//	}
 	return (0);
 }
