@@ -26,11 +26,17 @@ Kill *Kill::create(const std::string & full_command, const std::vector<std::stri
 
 bool Kill::execute(Server & server, Client & client)
 {
+
 	if (!client._priveleges.count('O'))
 		{
 			client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOPRIVILEGES,ERR_NOPRIVILEGES_MESS),client));
 			return false;
 		}
+	if (server._users.count(_arguments[0]) == 0)
+    {
+        client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHNICK,ERR_NOSUCHNICK_MESS),client));
+        return false;
+    }
 	if (OperatorsCommand::execute(server, client))
 		return(true);
 	std::set<SharedPtr<Client> > releted_users;

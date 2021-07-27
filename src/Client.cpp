@@ -222,25 +222,6 @@ void Client::set_hostname(const std::string& hostname) {
 const std::string & Client::hostIp() const { return _hostIp; }
 
 
-// Command::Command(const std::string &command, const std::string &nick) : client_nick(nick) {
-//     //TODO: ЗАГЛУШКА!
-//     std::vector<std::string> splitted = ft::split(command, ' ');
-//     dst = splitted[0];
-//     msg = splitted[1];
-// }
-
-// void Command::exec(Server *server) {
-//     //TODO: ЗАГЛУШКА!
-//     try {
-//         Message new_msg(client_nick, msg);
-//         server->_users.at(dst)->addMsg(new_msg);
-//         //AT ВАЖЕН!!!!
-//    }
-//     catch (...) {
-//         std::cerr << "Catch error ..." << std::endl;
-//     }
-// }
-
 Client::Client(): _fd(-1)
 {
 	

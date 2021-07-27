@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(webserv)
 
 set(CMAKE_CXX_STANDARD 98)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -MMD -D_GLIBCXX_DEBUG -std=c++98 -fsanitize=address")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -fsanitize=address")
 include_directories(include
         Commands
         .)
@@ -18,7 +18,7 @@ add_executable(test_server
         src/Client.cpp
         src/Channel.cpp
         src/Message.cpp
-        Commands/Ison.cpp
+        Commands/Ison.cpp #++
         Commands/Userhost.cpp
         Commands/Names.cpp
         Commands/Topic.cpp
@@ -31,7 +31,7 @@ add_executable(test_server
         Commands/Invite.cpp
         Commands/Join.cpp
         Commands/Kick.cpp
-        Commands/Kill.cpp
+        Commands/Kill.cpp ## in test
         Commands/Mode.cpp
         Commands/Nick.cpp
         Commands/Oper.cpp
