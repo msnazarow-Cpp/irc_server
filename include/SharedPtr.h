@@ -90,13 +90,13 @@ template <typename T>
 	{
 		return (lhs.base() < rhs.base());
 	}
-	// template<typename T_L, typename T_R>
-	// bool
-	// operator<(const SharedPtr<T_L> lhs,
-	// 		const SharedPtr<T_R> rhs)
-	// {
-	// 	return (lhs.base() < rhs.base());
-	// }
+	 template<typename T_L, typename T_R>
+	 bool
+	 operator<(const SharedPtr<T_L> lhs,
+	 		const SharedPtr<T_R> rhs)
+	 {
+	 	return (lhs.base() < rhs.base());
+	 }
 	template <typename T>
 	bool
 	operator>(const SharedPtr<T> lhs,
@@ -104,14 +104,14 @@ template <typename T>
 	{
 		return (lhs.base() > rhs.base());
 	}
-	// template<typename T_L,
-	// 		typename T_R>
-	// bool
-	// operator>(const SharedPtr<T_L> lhs,
-	// 		const SharedPtr<T_R> rhs)
-	// {
-	// 	return (lhs.base() > rhs.base());
-	// }
+	 template<typename T_L,
+	 		typename T_R>
+	 bool
+	 operator>(const SharedPtr<T_L> lhs,
+	 		const SharedPtr<T_R> rhs)
+	 {
+	 	return (lhs.base() > rhs.base());
+	 }
 	template <typename T>
 	bool
 	operator<=(const SharedPtr<T> lhs,
@@ -119,13 +119,13 @@ template <typename T>
 	{
 		return (lhs.base() <= rhs.base());
 	}
-	// template<typename T_L, typename T_R>
-	// bool
-	// operator<=(const SharedPtr<T_L> lhs,
-	// 		const SharedPtr<T_R> rhs)
-	// {
-	// 	return (lhs.base() <= rhs.base());
-	// }
+	 template<typename T_L, typename T_R>
+	 bool
+	 operator<=(const SharedPtr<T_L> lhs,
+	 		const SharedPtr<T_R> rhs)
+	 {
+	 	return (lhs.base() <= rhs.base());
+	 }
 	template <typename T>
 	bool
 	operator>=(const SharedPtr<T> lhs,
@@ -133,11 +133,11 @@ template <typename T>
 	{
 		return (lhs.base() >= rhs.base());
 	}
-	// template<typename T_L,
-	// 		typename T_R>
-	// bool
-	// operator>=(const SharedPtr<T_L> lhs,
-	// 		const SharedPtr<T_R> rhs)
-	// {
-	// 	return (lhs.base() >= rhs.base());
-	// }
+	 template<typename T_L,
+	 		typename T_R>
+	 bool
+	 operator>=(const SharedPtr<T_L> lhs,
+	 		const SharedPtr<T_R> rhs)
+	 {
+	 	return (lhs.base() >= rhs.base());
+	 }

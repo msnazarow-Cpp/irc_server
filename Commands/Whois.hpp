@@ -17,7 +17,7 @@ public:
 	std::string person(Client & client);
 	std::string channels(Client & client);
 	static std::string response(Server & server, Client & client);
-    // virtual const std::string &getCommandName();
+;
 private:
     std::string _message;
 };

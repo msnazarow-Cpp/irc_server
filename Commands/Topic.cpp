@@ -21,9 +21,6 @@ Topic::Topic(const std::string & full_command, const std::vector<std::string> & 
 	if (arguments[0][0] != '#')
 		throw WrongChannelName();
 	_channel = arguments[0];
-	// _channels = ft::split(arguments[0], ',');
-	// if (arguments.size() == 2)
-	// 	_keys = ft::split(arguments[1], ',');
 }
 
 Topic *Topic::create(const std::string & full_command, const std::vector<std::string> & arguments)
@@ -77,8 +74,3 @@ bool Topic::execute(Server & server, Client & client)
 	std::cout << "Topic works!" << std::endl;
 	return false;
 }
-
-// std::string Topic::getCommandName() 
-// {
-// 	return ("Topic");
-// }

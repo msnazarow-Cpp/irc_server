@@ -37,16 +37,16 @@ bool User::execute(Server & server, Client & client)
 	client.set_username(_username);
 	if (client.nick_check && client.user_check){
 		if (client.pass_check)
-			{
-				client._received_msgs.push(clientReply(server.hostIp(), Message("001", ":Welcome abroad!"),client));
-				client._received_msgs.push(clientReply(server.hostIp(), Message("376", ":Feel free!"),client));
-				client.reg_check = true;
-			}
+        {
+            client._received_msgs.push(clientReply(server.hostIp(), Message("001", ":Welcome abroad!"),client));
+            client._received_msgs.push(clientReply(server.hostIp(), Message("376", ":Feel free!"),client));
+            client.reg_check = true;
+        }
 		else
-			{
-				client._received_msgs.push("ERROR :Access denied: Bad password?\r\n");
-				server._to_delete.insert(client.get_nickname());
-			}
+        {
+            client._received_msgs.push("ERROR :Access denied: Bad password?\r\n");
+            server._to_delete.insert(client.get_nickname());
+        }
 	}
 	return false;
 }

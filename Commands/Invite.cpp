@@ -39,7 +39,6 @@ bool Invite::execute(Server & server, Client & client)
 		else if (server._channels.count(_channel_name))
 		{
 			std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > > & users = server._channels[_channel_name].users;
-		//	server._users[_recipients[i]]->_received_msgs.push(':' + client.get_nickname() + " INVITE " + _recipients[i] + " " + _channel_name);
 			server._users[_recipients[i]]->_received_msgs.push(notification("INIVITE :" + _recipients[i]	+ " " + _channel_name, client));
 			for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it = users.begin(); it != users.end(); it++)
 				if ((*it).second.second.count('r') && (*it).first != client.get_nickname())

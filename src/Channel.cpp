@@ -16,3 +16,5 @@ Channel::Channel(const Channel &)
 {
 	
 }
+
+const std::string &Channel::getTopic() const { return topic; }

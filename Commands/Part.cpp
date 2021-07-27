@@ -47,8 +47,3 @@ bool Part::execute(Server & server, Client & client)
 	std::cout << "Part works!" << std::endl;
 	return false;
 }
-
-// std::string Part::getCommandName() 
-// {
-// 	return ("PART");
-// }

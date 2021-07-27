@@ -8,23 +8,6 @@
 #include "codes.hpp"
 class Server;
 class Client;
-
-// class Client{
-// 	public:
-// 		std::string username;
-// 		std::string nickname;
-// };
-
-// class Server{
-// 	public:
-// 	const std::string &getPassword() const {return ("");}
-// 	const std::string &getHostname() const {return ("");}
-// 	void authentificate(const Client &client) const {}
-
-// 	/* std::string clientRespons(Command * command, const Client & client){
-// 		return (":" + client.nickname + "!~" + client.nickname + "@" + getHostname() + " " + command->getCommandMessage() );
-// 	} */
-// };
 enum type
 	{
 		channel,
@@ -39,15 +22,14 @@ protected:
 	std::vector<std::string> _arguments;
 	std::vector<std::string> _recipients;
 	std::vector<type> _recipients_types;
-	//std::vector<std::pair< std::string, type> > _recipients;
 public:
-	Command(/* args */);
+	Command();
 	Command(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments);
 	Command(const Command &);
 	Command &operator=(const Command &);
 	virtual bool execute(Server &server, Client &client) = 0;
 	virtual Command *create(const std::string & full_command, const std::vector<std::string> & arguments) = 0;
-	virtual const std::string &getCommandMessage() { return _message;}
+	virtual const std::string &getCommandMessage();
 	std::string &getCommandName();
 	class NothingToDo : public std::exception {};
 	class WrongArgumentsNumber : public std::exception{};
@@ -60,10 +42,10 @@ public:
 	virtual ~Command();
 	class ErrNickname : public std::exception {};
 
-	const std::string &commandName() const { return _command_name; }
+	const std::string &commandName() const;
 
-	std::string fullCommand() const { return _full_command; }
+	std::string fullCommand() const;
 
-	std::vector<std::string> arguments() const { return _arguments; }
+	std::vector<std::string> arguments() const;
 };
 

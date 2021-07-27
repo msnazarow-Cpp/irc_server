@@ -16,7 +16,7 @@ public:
 	virtual bool execute(Server & server, Client & client);
 	static std::string response(std::string channelName, Server & server, Client & client);
 	static std::string response(Server & server, Client & client);
-    // virtual const std::string &getCommandName();
+
 private:
 
 };

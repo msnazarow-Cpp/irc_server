@@ -33,8 +33,3 @@ bool Userhost::execute(Server & server, Client & client)
 	}
 	return true;
 }
-
-// std::string Userhost::getCommandName() 
-// {
-// 	return ("Userhost");
-// }

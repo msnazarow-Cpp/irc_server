@@ -49,8 +49,3 @@ bool Pass::execute(Server & server, Client & client)
 	std::cout << "Pass works!" << std::endl;
 	return false;
 }
-
-// std::string Pass::getCommandName() 
-// {
-// 	return ("PASS");
-// }

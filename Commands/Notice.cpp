@@ -66,13 +66,3 @@ bool Notice::execute(Server & server, Client & client)
 	std::cout << "Notice works!" << std::endl;
 	return false;
 }
-
-
-// void sendMessagetoUsers(std::string & message, std::map<std::string, std::set<char> > & users )
-// {
-
-// }
-// std::string Notice::getCommandName() 
-// {
-// 	return ("Notice");
-// }

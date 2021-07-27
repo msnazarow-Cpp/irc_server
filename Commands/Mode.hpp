@@ -15,7 +15,6 @@ public:
 	std::vector<std::string> modesParse(std::string modes);
 	virtual Mode *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual const std::string &getCommandName();
 private:
     
 };

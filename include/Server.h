@@ -19,16 +19,11 @@ private:
 	Server();
 	Server(const Server &);
 	void operator=(const Server &);
-
-	//std::vector<ServConfig> _servers;
-
-	//std::list<SharedPtr<Client> > _new_users;
 	std::set<std::string> _to_delete;
 	std::vector<std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator> _to_delete_from_channels;
     Clients_map _users;
     std::map<std::string, Channel> _channels;
-    // TODO: std::map<std::string, Channel> _channels;
-	fd_set _readFds;
+    fd_set _readFds;
 	fd_set _writeFds;
     size_t _number_of_uneregistered_clients;
 	fd_type _socket_fd;
@@ -39,7 +34,6 @@ private:
     std::string _password;
  public:
     friend class Command;
-	// friend bool Command::execute(Server &server, Client &client);  Не робит почему то
 	friend class Invite;
 	friend class Join;
 	friend class Kick;
@@ -70,11 +64,7 @@ private:
 	int Select();
 	int getMaxSockFd() const;
 	void newClient();
-	void update_fd_set(fd_type fd, fd_set *set)
-	{
-		_max_fd = std::max(fd, _max_fd);
-		FD_SET(fd, set);
-	};
+	void update_fd_set(fd_type fd, fd_set *set);;
 
 	class Error : public std::runtime_error {
 	 private:
@@ -84,8 +74,6 @@ private:
 		std::runtime_error("Error: " + msg + ": " + strerror(errno)) {};
 	};
 	const std::string & getPassword() const;
-    void authentificate(Client & client);
-    
     std::string hostIp() const;
 	void reloadFdSets();
 	const std::map<std::string, SharedPtr<Client> > & getClients() const;

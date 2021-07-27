@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(webserv)
 
 set(CMAKE_CXX_STANDARD 98)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -fsanitize=address")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror")
 include_directories(include
         Commands
         .)
@@ -11,7 +11,7 @@ add_executable(bot bot/main.cpp src/utils.cpp)
 
 add_executable(KekBot KekBot/main.cpp src/utils.cpp)
 
-add_executable(test_server
+add_executable(ircserv
         src/Server.cpp
         src/utils.cpp
         src/main.cpp

@@ -16,26 +16,13 @@
     #define SO_NOSIGPIPE 2 
 #endif // !SO_NOSIGPIPE
 
-
-// bool mesEmpty(const Server::Clients_map::iterator & it)
-// {
-// 	//(*_to_delete[i]).second->_received_msgs.empty()
-// 	return((*it).second->_received_msgs.empty());
-// }
-
-// bool iterZero(const Server::Clients_map::iterator & it)
-// {
-// 	return (it == Server::Clients_map::iterator(NULL));
-// }
-
 Server::Server(int port, const std::string &host_ip) : _port(port), _host_ip(host_ip), _sockaddr() {
     bzero(&_sockaddr, sizeof(sockaddr_in));
     FD_ZERO(&_writeFds);
     FD_ZERO(&_readFds);
     initSocket();
 }
-Server::Server(int port, const std::string &host_ip, std::string password) : _port(port), _host_ip(host_ip)
-{
+Server::Server(int port, const std::string &host_ip, std::string password) : _port(port), _host_ip(host_ip) {
 	_number_of_uneregistered_clients = 0;
 	_password = password;
 	bzero(&_sockaddr, sizeof(sockaddr_in));
@@ -69,7 +56,7 @@ void Server::newClient() {
 
     int connection = accept(this->_socket_fd,
                             (struct sockaddr *) &clientAddr,
-                            (socklen_t *) &addrlen); //TODO: clientAddr and Addrlen?!
+                            (socklen_t *) &addrlen);
 							
     if (connection == -1)
         throw Error("connection");
@@ -77,25 +64,23 @@ void Server::newClient() {
 	
 	if (_password.empty())
 		new_client->pass_check = true;
-    //TODO:: costil
 	new_client->set_hostname(inet_ntoa(clientAddr.sin_addr));
     std::string name = "__unregistered__" + ft::to_string(_number_of_uneregistered_clients++);
     new_client->set_nickname(name);
     std::cerr << "New user: " << name << std::endl;
     _users[name] = new_client;
-    //TODO: costil end
     fcntl(connection, F_SETFL, O_NONBLOCK);
 }
 
-const std::string & Server::getPassword() const
-{
+const std::string & Server::getPassword() const {
     return _password;
 }
 
-// void Server::authentificate(Client & client) 
-// {
-  
-// }
+void Server::update_fd_set(fd_type fd, fd_set *set) {
+    _max_fd = std::max(fd, _max_fd);
+    FD_SET(fd, set);
+}
+
 
 int Server::getMaxSockFd() const {
     return (_max_fd);
@@ -115,17 +100,9 @@ void Server::reloadFdSets() {
     }
 }
 
-bool isEmptyChannel(std::pair <std::string, Channel *> elem)
-{
-	return (elem.second->users.empty());
-}
-
 void Server::checkClients() {
 
     typedef std::map<std::string, SharedPtr<Client> >::iterator map_iter;
-    //TODO:: Vid pipez
-
-    //bool acted = false;
 
     for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {
         SharedPtr<Client> client = (*it_a).second;
@@ -146,24 +123,14 @@ void Server::checkClients() {
             {
 				ERR_NOSUCHCHANNEL;
 					client->_received_msgs.push(clientReply(this->hostIp(), Message(ERR_NOSUCHCHANNEL, comm->arguments()[0] + ":"), *client));
-				//std::cout << client->_received_msgs.back() << std::endl;
             }
         }
     }
 
-	// for (size_t i = 0; i < _to_delete.size(); i++)
-	// {
-		
-	// }
-	// if (!_to_delete.empty())
-	// 	std::remove_if(_to_delete.begin(),_to_delete.end(),iterZero);
     for (map_iter it_a = _users.begin(); it_a != _users.end(); it_a++) {
         if (FD_ISSET((*it_a).second->getFd(), &_writeFds))
             (*it_a).second->response();
     }
-	// size_t i = 0;
-	// while (i < _to_delete.size())
-	// {
 		for (std::set<std::string>::iterator it = _to_delete.begin(); it != _to_delete.end();)
 		{
 			std::set<std::string>::iterator next = ++it;
@@ -183,13 +150,6 @@ void Server::checkClients() {
 			_channels.erase(it);
 		it = next;
 	}
-	// }
-	// i = 0;
-	// while (_to_delete_from_channels.size())
-	// {
-	// 	_to_delete_from_channels.begin();
-	// 	_to_delete_from_channels.erase(_to_delete_from_channels.begin(); // Tut sega
-	// }
 }
 
 

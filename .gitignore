@@ -7,10 +7,7 @@
 *a.out
 dockerCont
 bin
-/www/puts/put_test/
 *.tmp
-/www/puts/file_should_exist_after
-/www/puts/multiple_same
 test
 ft_irc
 .vscode

@@ -15,7 +15,7 @@ Parse Client::parse;
 
 bool Client::response() {
     this->Combine_messages();
-    raw_send(); //TODO: if possible
+    raw_send();
     return true;
 }
 
@@ -26,10 +26,9 @@ int Client::getFd() const {
 bool Client::receive(bool fd_is_set, Server &server) {
     if (!fd_is_set)
         return false;
-    //int ret = 1;
+
     char buffer[BUFFER_SIZE + 1];
-    size_t read_ret = read(getFd(), buffer, BUFFER_SIZE); //Происходит дичь, рид возвращает 18446744073709551615
-	//strart dich
+    size_t read_ret = read(getFd(), buffer, BUFFER_SIZE);
 	if (read_ret == 0)
 	{
 		server._to_delete.insert(_nickname);
@@ -39,7 +38,6 @@ bool Client::receive(bool fd_is_set, Server &server) {
 	{
 		return true;
 	}
-	// !end dich
 	buffer[read_ret] = '\0';
 	_raw_data += buffer;
 	if (_raw_data.empty())
@@ -59,8 +57,6 @@ bool Client::receive(bool fd_is_set, Server &server) {
 		_raw_data.clear();
     for (size_t i = 0; i < splitted.size(); i++) {
 		SharedPtr<Command> comm;
-        // try 
-		// {
 			if (!splitted[i].empty())
 			{
 				if(splitted[i].substr(0, 6) == "CAP LS")
@@ -113,21 +109,6 @@ bool Client::receive(bool fd_is_set, Server &server) {
 					
 				}
 			}
-        // }
-		// catch(const Parse::UknownCommand & e)
-		// {
-		// 	_received_msgs.push(notification(std::string(e.what()), *this));
-		// 	std::cout << _received_msgs.back() << std::endl;
-		// }
-		// catch(const Command::WrongArgumentsNumber &e)
-		// {
-		// 	_received_msgs.push(notification(splitted[0] + ": " + e.what(), *this));
-		// 	std::cout << _received_msgs.back() << std::endl;
-		// }
-		// catch(const std::exception& e)
-		// {
-		// 	std::cout << e.what() << std::endl;
-		// }
     }
 
     return true;
@@ -226,7 +207,11 @@ Client::Client(): _fd(-1)
 {
 	
 }
-//removed !~ ~
+
+bool Client::send_waiting() {
+    return !_raw_send.empty() || !_received_msgs.empty();
+}
+
 std::string notification(const Message & message, const Client & client)
     {
 		return (":" + client.get_nickname() + "!" + client.get_username() + "@" + client.get_hostname() + " " + message.message() + "\r\n");

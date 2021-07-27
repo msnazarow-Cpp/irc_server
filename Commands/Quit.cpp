@@ -21,8 +21,6 @@ Quit *Quit::create(const std::string & full_command, const std::vector<std::stri
 
 bool Quit::execute(Server & server, Client & client)
 {
-	// if (RegisteredCommand::execute(server, client))
-	// 	return(true);
 	std::set<SharedPtr<Client> > releted_users;
 	releted_users.insert(server._users[client.get_nickname()]);
 	for (std::map<std::string, Channel *>::iterator it_ch = client._channels.begin(); it_ch != client._channels.end(); it_ch++)
@@ -33,13 +31,7 @@ bool Quit::execute(Server & server, Client & client)
 	server._to_delete.insert(client.get_nickname());
 	for (std::map<std::string, Channel>::iterator it = server._channels.begin() ; it != server._channels.end(); it++)
 		(*it).second.users.erase(client.get_nickname());
-	//close(client.getFd()); // ТаК??
 	client._received_msgs.push("ERROR :Closing link: (~" + client.get_username()+ "@" + client.get_hostname() + ") [Quit:]\r\n");
 	std::cout << "Quit works!" << std::endl;
 	return true;
 }
-
-// std::string Quit::getCommandName() 
-// {
-// 	return ("QUIT");
-// }

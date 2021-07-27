@@ -34,7 +34,6 @@ Who *Who::create(const std::string & full_command, const std::vector<std::string
 	return new Who(full_command, arguments);
 }
 
-//remove ~
 std::string Who::response(std::string channelName, Server & server, Client & client)
 {
 	return (channelName + " " + client.get_username() + " " + client.get_hostname() + " " + server.hostIp() + " " + 
@@ -66,17 +65,11 @@ bool Who::execute(Server & server, Client & client)
 	}
 	else if (server._users.count(_recipients[0]) != 0)
 	{
-		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOREPLY, response("*", server, server._users[_])),client));
+		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOREPLY, response("*", server, *server._users[_recipients[0]])),client));
         client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFWHO, RPL_ENDOFWHO_MESS),client));
 	}
 	else
         client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHNICK,ERR_NOSUCHNICK_MESS),client));
-
     std::cout << "Who works!" << std::endl;
 	return true;
 }
-
-// std::string Who::getCommandName() 
-// {
-// 	return ("Who");
-// }

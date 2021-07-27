@@ -89,14 +89,8 @@ bool Join::execute(Server & server, Client & client)
 			client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_NOTOPIC, _channels[i] + " " +  RPL_NOTOPIC_MESS),client));
 		else
 			client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_TOPIC, _channels[i] + " :" +  server._channels[_channels[i]].topic),client));
-		//:irc.server.net 353 Phyre = #SomeChannel :@WiZ
 	}
 	
 	std::cout << "Join works!" << std::endl;
 	return false;
 }
-
-// std::string Join::getCommandName() 
-// {
-// 	return ("JOIN");
-// }

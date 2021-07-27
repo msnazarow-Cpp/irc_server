@@ -11,9 +11,7 @@ int main(int ac, char **av)
 		return 1;
 	}
 	std::cout << std::endl << "\033[1;31m" << "WELCOME TO MMM_IRC" << "\033[0m" << std::endl << std::endl;
-
-//	try {
-		Server server(atoi(av[1]), "localhost", av[2]);
+	Server server(atoi(av[1]), "localhost", av[2]);
 		while (loop)
 		{
 			int ret = server.Select();
@@ -25,9 +23,5 @@ int main(int ac, char **av)
 			server.checkSockets();
 			server.checkClients();
 		}
-//	} catch (std::exception &e) {
-//		std::cout << "THis is noT normal" <<std::endl;
-//		std::cerr << e.what() << std::endl;
-//	}
 	return (0);
 }

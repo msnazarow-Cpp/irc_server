@@ -12,21 +12,6 @@ class Command;
 class Server;
 class Client;
 class Channel;
-// class Command{
-// public:
-//     Command(const std::string& basicString, const std::string&);
-//     std::string msg;
-//     std::string dst;
-//     std::string client_nick;
-//     void exec(Server*);
-// };//TODO sgertrud
-enum Status
-	{
-		unregistered,
-		pass_passing,
-		nick_having,
-		registered_user
-	};
 class Client {
 
 private:
@@ -57,15 +42,12 @@ public:
 	std::map <std::string, Channel *> _channels;
 	std::queue<std::string> _received_msgs;
 	std::queue<SharedPtr<Command> > _received_commands;
-	//bool receive(bool);
+
 	bool receive(bool, Server & server);
 	bool response();
 	void raw_send();
-	bool send_waiting()
-	{
-		return !_raw_send.empty() || !_received_msgs.empty();
-	}
-    //e_client_status GetStatus();
+	bool send_waiting();
+
     int getFd() const;
     void Combine_messages();
     void addMsg(const std::string &msg);
@@ -83,8 +65,6 @@ public:
 	void set_realname(const std::string& realname);
 
 	const std::string & hostIp() const;
-
-	//const std::set<char> & priveleges() const { return _priveleges; }
 };
 
 std::string notification(const Message & message, const Client & client);

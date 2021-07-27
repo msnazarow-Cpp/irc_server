@@ -1,8 +1,5 @@
 #include "OperatorsCommand.hpp"
-OperatorsCommand::OperatorsCommand(const OperatorsCommand &) 
-{
-	
-}
+OperatorsCommand::OperatorsCommand(const OperatorsCommand &) {}
 
 OperatorsCommand::OperatorsCommand(const std::string & full_command, const std::string & command_name, const std::vector<std::string> & arguments)
 	: RegisteredCommand(full_command, command_name, arguments)

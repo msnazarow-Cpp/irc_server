@@ -42,7 +42,6 @@ bool Privmsg::execute(Server & server, Client & client)
 		{
 			if (server._users.count(_recipients[i]) == 0)
 				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHNICK,ERR_NOSUCHNICK_MESS),client));
-				//throw NosuchUser();
 			else
 				server._users[_recipients[i]]->_received_msgs.push(notification("PRIVMSG " + _recipients[i]	+ " :" + _message, client));
 		}

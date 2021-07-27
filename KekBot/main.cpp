@@ -1,7 +1,3 @@
-//
-// Created by Menoetius Izola on 7/26/21.
-//
-
 #include <iostream>
 #include <sys/types.h>
 #include <sys/socket.h>

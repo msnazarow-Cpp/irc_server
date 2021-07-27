@@ -55,8 +55,3 @@ bool Kill::execute(Server & server, Client & client)
 	std::cout << "Kill works!" << std::endl;
 	return true;
 }
-
-// std::string Kill::getCommandName() 
-// {
-// 	return ("KILL");
-// }

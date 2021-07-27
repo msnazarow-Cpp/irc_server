@@ -14,7 +14,6 @@ public:
 
 	virtual Oper *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual const std::string &getCommandName();
 
 private:
     

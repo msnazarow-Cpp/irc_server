@@ -16,7 +16,7 @@ public:
 	bool checkBan(std::vector<Channel::BanMask> & ban_list, const std::string & hostIp, Client & client);
 	virtual Topic *create(const std::string & full_command, const std::vector<std::string> & arguments);
 	virtual bool execute(Server & server, Client & client);
-	// virtual const std::string &getCommandName();
+
 private:
     std::string _channel;
 	std::vector<std::string> _keys;

@@ -33,28 +33,11 @@ COMM =		Commands/Command.o\
 			Commands/RegisteredCommand.o\
 			Commands/OperatorsCommand.o\
 			Commands/Parse.o
-SRC_B		=	main.cpp\
-				ServConfig_bonus.cpp \
-				Server.cpp\
-				Parser.cpp\
-				Location.cpp\
-				utils.cpp\
-				Cgi.cpp\
-				Request.cpp\
-				Client.cpp\
-				MimeTypes.cpp\
-				response.cpp\
-				GetMethod.cpp\
-				PostMethod.cpp\
-				PutMethod.cpp\
-				response_generator.cpp\
-				base64.cpp \
-				DeleteMethod.cpp
 COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address
-INCLUDES = -ICommands -I. -Iinclude
+CPPFLAGS = -Wall -Werror -Wextra -MMD $(INCLUDES)
+INCLUDES = -ICommands -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))
 OBJ_B		=	$(addprefix $(BIN)/, $(SRC_B:cpp=o))
@@ -97,12 +80,5 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@rm -f $(NAME_B)
-
-test: run
-	./tester http://localhost:1234
-
-run: all
-	./webserv config/mizola.conf &
-	./tester http://localhost:1234
 
 re: fclean all

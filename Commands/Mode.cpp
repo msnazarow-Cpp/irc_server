@@ -168,8 +168,3 @@ bool Mode::execute(Server & server, Client & client)
 	}
 	return false;
 }
-
-// std::string Mode::getCommandName() 
-// {
-// 	return ("MODE");
-// }

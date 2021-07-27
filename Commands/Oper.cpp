@@ -39,8 +39,3 @@ bool Oper::execute(Server & server, Client & client)
 	std::cout << "Oper works!" << std::endl;
 	return false;
 }
-
-// std::string Oper::getCommandName() 
-// {
-// 	return ("OPER");
-// }

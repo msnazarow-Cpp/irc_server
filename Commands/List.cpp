@@ -30,8 +30,3 @@ bool List::execute(Server & server, Client & client)
 	std::cout << "List works!" << std::endl;
 	return true;
 }
-
-// std::string List::getCommandName() 
-// {
-// 	return ("List");
-// }

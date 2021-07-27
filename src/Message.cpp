@@ -25,3 +25,7 @@ Message &Message::operator=(const Message &) {
 Message::~Message()
 {
 }
+
+std::string Message::code() const { return _code; }
+
+const std::string &Message::message() const { return _message; }

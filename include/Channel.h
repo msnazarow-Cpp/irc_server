@@ -30,7 +30,7 @@ public:
 	Channel &operator=(const Channel &);
 	~Channel();
 
-	const std::string &getTopic() const { return topic; }
+	const std::string &getTopic() const;
 
 private:
 	

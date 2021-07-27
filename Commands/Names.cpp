@@ -52,10 +52,6 @@ bool Names::execute(Server & server, Client & client)
 				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHCHANNEL, _recipients[i] + " :"/* +  ERR_NOSUCHCHANNEL_MESS */),client));
 				continue ;
 			}	
-		// for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator  it = server._channels[_channels[i]].users.begin(); it != server._channels[_channels[i]].users.end(); it++)
-		// {
-		// 	server._users[(*it).first]->_received_msgs.push(notification("Names :" + _channels[i] ,client));
-		// }
 		_message = "";
 		for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator  it = server._channels[_channels[i]].users.begin(); it != server._channels[_channels[i]].users.end(); it++)
 		{
@@ -65,14 +61,8 @@ bool Names::execute(Server & server, Client & client)
 		}
 		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_NAMREPLY, "= " + _channels[i] + " :" + _message), client));
 		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFNAMES, _channels[i] + " " RPL_ENDOFNAMES_MESS),client));
-		//:irc.server.net 353 Phyre = #SomeChannel :@WiZ
 	}
 	
 	std::cout << "Names works!" << std::endl;
 	return false;
 }
-
-// std::string Names::getCommandName() 
-// {
-// 	return ("Names");
-// }
