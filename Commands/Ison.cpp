@@ -23,7 +23,7 @@ Ison *Ison::create(const std::string & full_command, const std::vector<std::stri
 bool Ison::execute(Server & server, Client & client)
 {
 	client.touch_check = true;
-	_message = "";
+	_message = ":";
 	// for (Server::Clients_map::iterator it_ch = server._users.begin(); it_ch != server._users.end(); it_ch++)
 	for (size_t i = 0; i < _arguments.size(); i++)
 	{

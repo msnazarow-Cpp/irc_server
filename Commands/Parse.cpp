@@ -106,8 +106,8 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 		i++;
 		if (i >= _arguments.size())
 			_arguments.resize(_arguments.size() * 2);
-		if (i > 5)
-			throw ThoManyArgs();
+//		if (i > 5)
+//			throw ThoManyArgs();
 	}
 	_arguments.resize(i);
 	if (_arguments.size() == 0)

@@ -39,7 +39,7 @@ bool Kick::execute(Server & server, Client & client)
 				server._channels[channel_name].users.erase(nick_name);
 			}
 			else
-				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOTONCHANNEL, ERR_NOTONCHANNEL_MESS),client));
+				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOTONCHANNEL, ":" + nick_name +" is not on that channel"),client));
 		}
 		else
 			client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_CHANOPRIVSNEEDED, ERR_CHANOPRIVSNEEDED_MESS),client));

@@ -1,22 +1,22 @@
 #pragma once
 #include "Command.hpp"
 #include "Invite.hpp"
-#include "Join.hpp"
+#include "Join.hpp" //++
 #include "Kick.hpp"
 #include "Kill.hpp"
 #include "Mode.hpp"
-#include "Nick.hpp"
+#include "Nick.hpp" //++
 #include "Oper.hpp"
 #include "Part.hpp"
-#include "Pass.hpp"
+#include "Pass.hpp" //++
 #include "Privmsg.hpp"
 #include "Quit.hpp"
-#include "User.hpp"
+#include "User.hpp" //++
 #include "List.hpp"
 #include "Who.hpp"
 #include "Notice.hpp"
 #include "Whois.hpp"
-#include "Ison.hpp"
+#include "Ison.hpp" //++ 
 #include "Topic.hpp"
 #include "Names.hpp"
 #include "Userhost.hpp"
@@ -43,5 +43,3 @@ public:
         return m_map;
     }
 };
-
-

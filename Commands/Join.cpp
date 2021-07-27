@@ -48,19 +48,19 @@ bool Join::execute(Server & server, Client & client)
 	for (size_t i = 0; i < _channels.size(); i++)
 	{
 		if (_channels[i][0] != '#')
-			{
-				client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHCHANNEL, _recipients[i] + " :"/* +  ERR_NOSUCHCHANNEL_MESS */),client));
-				continue ;
-			}	
+        {
+            client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHCHANNEL, _recipients[i] + " :"/* +  ERR_NOSUCHCHANNEL_MESS */),client));
+            continue ;
+        }
 		if(server._channels.count(_channels[i]) == 0)
-			{
-				server._channels[_channels[i]].creation_time = time(NULL); //
-				server._channels[_channels[i]].users[clientName].first = server._users[clientName];
-				server._users[clientName]->_channels[_channels[i]] = &server._channels[_channels[i]];
-				server._channels[_channels[i]].users[clientName].second.insert('w');
-				server._channels[_channels[i]].users[clientName].second.insert('r');
-				server._channels[_channels[i]].users[clientName].second.insert('o');
-			}
+        {
+            server._channels[_channels[i]].creation_time = time(NULL);
+            server._channels[_channels[i]].users[clientName].first = server._users[clientName];
+            server._users[clientName]->_channels[_channels[i]] = &server._channels[_channels[i]];
+            server._channels[_channels[i]].users[clientName].second.insert('w');
+            server._channels[_channels[i]].users[clientName].second.insert('r');
+            server._channels[_channels[i]].users[clientName].second.insert('o');
+        }
 		else if (server._channels[_channels[i]].users.count(clientName) == 0)
 		{
 			std::vector<Channel::BanMask> & ban_list = server._channels[_channels[i]].ban_list;

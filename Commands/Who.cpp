@@ -64,17 +64,15 @@ bool Who::execute(Server & server, Client & client)
 			}
 		}
 	}
-	else
+	else if (server._users.count(_recipients[0]) != 0)
 	{
-		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOREPLY, response("*", server, client)),client));
-		// client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOREPLY, RPL_WHOSTART_MESS),client));
+		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOREPLY, response("*", server, server._users[_])),client));
+        client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFWHO, RPL_ENDOFWHO_MESS),client));
 	}
+	else
+        client._received_msgs.push(clientReply(server.hostIp(), Message(ERR_NOSUCHNICK,ERR_NOSUCHNICK_MESS),client));
 
-	// for (std::map<std::string, Channel>::iterator it = server._channels.begin(); it != server._channels.end(); it++)
-	// 	for (std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator it_u = (*it).second.users.begin(); it_u != (*it).second.users.end(); it_u++)
-	// 		client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_WHOREPLY, response(it, server, *(*it_u).second.first)),client));
-	client._received_msgs.push(clientReply(server.hostIp(), Message(RPL_ENDOFWHO, RPL_ENDOFWHO_MESS),client));
-	std::cout << "Who works!" << std::endl;
+    std::cout << "Who works!" << std::endl;
 	return true;
 }
 
