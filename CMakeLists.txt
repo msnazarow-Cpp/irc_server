@@ -9,7 +9,7 @@ include_directories(include
 
 add_executable(bot bot/main.cpp src/utils.cpp)
 
-add_executable(mini_client mini_client/main.cpp src/utils.cpp)
+add_executable(KekBot KekBot/main.cpp src/utils.cpp)
 
 add_executable(test_server
         src/Server.cpp

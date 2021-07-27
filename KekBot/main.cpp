@@ -23,6 +23,9 @@ std::string myRecv(int fd) {
 		if (n < 1000) {
 			break;
 		}
+		while((n = recv(fd, buff, 1000, 0)) == -1) {
+			usleep(5);
+		}
 	}
 	return res;
 }
@@ -42,25 +45,33 @@ size_t getUniqueIndex(size_t index, size_t size) {
 	return res;
 }
 
+void reConnect(struct sockaddr_in& stSockAddr, int& nClientSock, int port) {
+	do{
+		nClientSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (nClientSock == -1) {
+			throw std::runtime_error(strerror(errno));
+		}
+		stSockAddr.sin_family = PF_INET;
+		stSockAddr.sin_port = htons(port);
+		stSockAddr.sin_addr.s_addr = 0; // localhost
+		sleep(1);
+		if(-1 != connect(nClientSock, (struct sockaddr*) &stSockAddr, sizeof (stSockAddr))){
+			break;
+		}
+		else
+			close(nClientSock);
+	}
+	while (1);
+}
+
 int main(int ac, char **av) {
 	if (ac < 2) {
 		std::cout << "usage \"./bin port [pass]\"" << std::endl;
 		exit(1);
 	}
 	struct sockaddr_in stSockAddr;
-	int nClientSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	if (nClientSock == -1) {
-		throw std::runtime_error(strerror(errno));
-	}
-
-	stSockAddr.sin_family = PF_INET;
-	stSockAddr.sin_port = htons(atoi(av[1]));
-	stSockAddr.sin_addr.s_addr = 0; // localhost
-
-	if (connect(nClientSock, (struct sockaddr*) &stSockAddr, sizeof (stSockAddr)) == -1) {
-		throw std::runtime_error(strerror(errno));
-	}
+	int nClientSock;
+	reConnect(stSockAddr, nClientSock, atoi(av[1]));
 
 	char buff[1000];
 	std::string res = connect_msg("kekBot", ac > 2 ? av[2] : "");
@@ -114,8 +125,8 @@ int main(int ac, char **av) {
 	struct timeval tv, current;
 	gettimeofday(&current, 0x0);
 	std::set<std::string> channels;
-    FD_SET(nClientSock, &forWrite);
-    while (loop) {
+	FD_SET(nClientSock, &forWrite);
+	while (loop) {
 		bzero(&forRead, sizeof(forRead));
 
 		FD_SET(nClientSock, &forRead);
@@ -125,10 +136,19 @@ int main(int ac, char **av) {
 		gettimeofday(&tv, 0x0);
 		if (tv.tv_sec - current.tv_sec > 5) {
 			gettimeofday(&current, 0x0);
-			write(nClientSock, "LIST\r\n", 6);
+			int kek = write(nClientSock, "LIST\r\n", 6);
+			if (kek == -1) {
+				reConnect(stSockAddr, nClientSock, atoi(av[1]));
+				channels.clear();
+				res = connect_msg("kekBot", ac > 2 ? av[2] : "");
+				write(nClientSock, res.c_str(), res.size());
+
+				std::cout << "++++++++++++++++++++\n" << recv(nClientSock, buff, 1000, 0) << "\n++++++++++++++++++++\n";
+			}
 		}
 		if (FD_ISSET(nClientSock, &forRead)) {
 			res = myRecv(nClientSock);
+			std::cout << "-----------------------\n" << res << "\n---------------------\n";
 			if (res.find(":SPAM\r\n") != std::string::npos) {
 				int start = res.find('#');
 				int end = res.find_first_of(' ', start);
@@ -140,7 +160,7 @@ int main(int ac, char **av) {
 					write(nClientSock, res.c_str(), res.size());
 				}
 				oldIndex = index;
-			} else if (res.find("LIST")){
+			} else if (res.find("LIST") != std::string::npos) {
 				std::vector<std::string> vCmd = ft::split(res, "\r\n");
 				if (vCmd.size() > 2) {
 					for (size_t i = 1; i < vCmd.size() - 1; ++i) {
@@ -159,9 +179,11 @@ int main(int ac, char **av) {
 						}
 					}
 				}
+			} else if (res.empty()) {
+				sleep(5);
 			}
 		}
-        bzero(&forWrite, sizeof(forWrite));
+//        bzero(&forWrite, sizeof(forWrite));
 
     }
 
@@ -169,3 +191,8 @@ int main(int ac, char **av) {
 	close(nClientSock);
 	return 0;
 }
+
+//PASS 123
+//NICK HH
+//USER HH H H H
+//JOIN #J
