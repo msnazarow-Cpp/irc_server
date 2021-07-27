@@ -34,7 +34,7 @@ std::string connect_msg(const std::string& bot_name, const std::string& password
 
 size_t getUniqueIndex(size_t index, size_t size) {
 	size_t res;
-	if (index == -1) {
+	if (index == UINTMAX_MAX) {
 		return rand() % size;
 	}
 	while ((res = rand() % size) == index);
@@ -114,6 +114,12 @@ int main(int ac, char **av) {
 					"— Где я тебе ее возьму? Давай курицу приготовлю!");
 	jokes.push_back("– Я пристаю, когда пьяный… — сказал он, смущаясь. Она молча достала бутылку и стакан.");
 	jokes.push_back("Голубей хлебом не корми, хлебом корми");
+	jokes.push_back("У меня такой ИНН, что тебе не СНИЛС");
+	jokes.push_back("Да что вы такое говорите?! Не бил я её! Я просто “дал пять” по лицу.");
+	jokes.push_back("— Приветик, дурак! — Сам ты приветик.");
+	jokes.push_back("Толстые стриптизерши иногда перегибают палку.");
+	jokes.push_back("Почему в стриптизерши не берут толстых.");
+	jokes.push_back("ну что мне показалось забавным сказал Миша, Очень старая никогда не была женой путина, демоны вошли в душу. но прикольно даже не это");
 	srand(time(0x0));
 	size_t oldIndex = -1, index = rand() % jokes.size();
     signal(SIGPIPE, SIG_IGN);
@@ -151,7 +157,7 @@ int main(int ac, char **av) {
 				std::string cmd = res.substr(start, end - start);
 				index = getUniqueIndex(oldIndex, jokes.size());
 				std::vector<std::string> splitted = ft::split(jokes[index], '\n');
-				for(int i = 0; i < splitted.size(); i++) {
+				for(size_t i = 0; i < splitted.size(); i++) {
 					res = "PRIVMSG " + cmd + " :" + splitted[i] + "\r\n";
 					write(nClientSock, res.c_str(), res.size());
 				}
