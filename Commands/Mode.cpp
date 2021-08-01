@@ -138,7 +138,7 @@ bool Mode::execute(Server & server, Client & client)
 			{
 				_arguments[1] = modes[i];
 				if (_arguments[1] == "b" || (_arguments[1] == "+b") || (_arguments[1] == "-b")) 
-					banCase(server,client,_arguments.size() > 3 ? _arguments[i + 2] : "");
+					banCase(server,client,_arguments.size() >= 3 ? _arguments[i + 2] : "");
 				else if (_arguments[1] == "+o" || _arguments[1] == "-o")
 				{
 					if (_arguments.size() >= 3 && server._users.count(_arguments[i + 2]))

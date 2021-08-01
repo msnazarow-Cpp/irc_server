@@ -1,7 +1,7 @@
 #include "Parse.hpp"
 #include "commands_map.hpp"
 #include "Client.h"
-
+#include <algorithm>
 Parse::Parse()
 {
 	commands = create_map<std::string, Command*>
@@ -48,10 +48,10 @@ bool spaceCheck(char lhs, char rhs)
 
 void removeMultipleSpaces(std::string& str)
 {
-    std::string::iterator new_end = std::unique(str.begin(), str.end(), spaceCheck);
-    str.erase(new_end, str.end());
-    if(str.size() && str[0] == ' ')
-        str.erase(str.begin());
+	std::string::iterator new_end = std::unique(str.begin(), str.end(), spaceCheck);
+	str.erase(new_end, str.end());
+	if(str.size() && str[0] == ' ')
+		str.erase(str.begin());
 }
 
 SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
@@ -68,7 +68,7 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 	size_t pos = _message.find(':');
 	if (pos != _message.npos)
 		_last_argument = _message.substr(pos + 1, _message.size() - pos);
-    removeMultipleSpaces(_last_argument);
+	removeMultipleSpaces(_last_argument);
 	_message = _message.substr(0, pos);
 	_mysteam << _message;
 	while (_mysteam >> _arguments[i])
@@ -94,9 +94,9 @@ SharedPtr<Command> Parse::make_command(std::string _message, Client* client)
 	_arguments.erase(_arguments.begin());
 	if (pos != _message.npos)
 		_arguments.push_back(_last_argument);
-    if (!_last_argument.empty())
-	    _full_command = _message + " :" + _last_argument;
-    else
-        _full_command = _message;
+	if (!_last_argument.empty())
+		_full_command = _message + " :" + _last_argument;
+	else
+		_full_command = _message;
 	return (SharedPtr<Command> (commands[_command_name]->create(_full_command, _arguments)) );
 }

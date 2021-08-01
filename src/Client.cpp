@@ -50,7 +50,7 @@ bool Client::receive(bool fd_is_set, Server &server) {
 			splitted[i].erase(splitted[i].size() - 1);
 	if (save_last) 
 	{
-		_raw_data.assign(splitted[_raw_data.size() - 1]);
+		_raw_data.assign(splitted[splitted.size() - 1]);
 		splitted.erase(splitted.end() - 1);
 	} 
 	else
@@ -71,6 +71,12 @@ bool Client::receive(bool fd_is_set, Server &server) {
 				else
 				{
 					size_t pos = splitted[i].find_first_not_of(' ');
+					if (pos == std::string::npos)
+					{	
+						if (touch_check)
+							_received_msgs.push(clientReply(server.hostIp(), Message(ERR_UNKNOWNCOMMAND, " :"),*this));
+						return false;
+					}
 					std::string firstcommand = splitted[i].substr(pos,splitted[i].size() - pos);
 					try
 					{

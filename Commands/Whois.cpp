@@ -11,7 +11,8 @@ Whois::~Whois()
 
 Whois::Whois(const std::string & full_command, const std::vector<std::string> & arguments): RegisteredCommand(full_command, "Whois", arguments)
 {
-
+	if (arguments.size() != 1)
+		throw WrongArgumentsNumber();
 }
 
 Whois *Whois::create(const std::string & full_command, const std::vector<std::string> & arguments)

@@ -21,19 +21,19 @@ private:
 	void operator=(const Server &);
 	std::set<std::string> _to_delete;
 	std::vector<std::map<std::string, std::pair<SharedPtr<Client>, std::set<char> > >::iterator> _to_delete_from_channels;
-    Clients_map _users;
-    std::map<std::string, Channel> _channels;
-    fd_set _readFds;
+	Clients_map _users;
+	std::map<std::string, Channel> _channels;
+	fd_set _readFds;
 	fd_set _writeFds;
-    size_t _number_of_uneregistered_clients;
+	size_t _number_of_uneregistered_clients;
 	fd_type _socket_fd;
 	fd_type _max_fd;
 	int _port;
 	std::string _host_ip;
 	sockaddr_in _sockaddr;
-    std::string _password;
- public:
-    friend class Command;
+	std::string _password;
+public:
+	friend class Command;
 	friend class Invite;
 	friend class Join;
 	friend class Kick;
@@ -74,7 +74,7 @@ private:
 		std::runtime_error("Error: " + msg + ": " + strerror(errno)) {};
 	};
 	const std::string & getPassword() const;
-    std::string hostIp() const;
+	std::string hostIp() const;
 	void reloadFdSets();
 	const std::map<std::string, SharedPtr<Client> > & getClients() const;
 

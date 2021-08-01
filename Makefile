@@ -36,7 +36,7 @@ COMM =		Commands/Command.o\
 COMM	:= $(addprefix obj/,$(COMM))
 DOBJ = $(OBJ:.o=.d)
 CXX = clang++ -std=c++98
-CPPFLAGS = -Wall -Werror -Wextra -MMD $(INCLUDES)
+CPPFLAGS = -Wall -Werror -Wextra -g -MMD -D_GLIBCXX_DEBUG $(INCLUDES) -fsanitize=address
 INCLUDES = -ICommands -Iinclude
 BIN			=	./bin
 OBJ_M		=	$(addprefix $(BIN)/, $(SRC_M:cpp=o))
